@@ -85,6 +85,20 @@ main(int argc, char *argv[])
 {
     int sfd, s;
     int efd;
+
+    // typedef union epoll_data
+    // {
+    //   void        *ptr;
+    //   int          fd;
+    //   __uint32_t   u32;
+    //   __uint64_t   u64;
+    // } epoll_data_t;
+
+    // struct epoll_event
+    // {
+    //   __uint32_t   events; /* Epoll events */
+    //   epoll_data_t data;   /* User data variable */
+    // };
     struct epoll_event event;
     struct epoll_event *events;
 
@@ -142,7 +156,10 @@ main(int argc, char *argv[])
             {
                 /* An error has occured on this fd, or the socket is not
                    ready for reading (why were we notified then?) */
-                fprintf(stderr, "epoll error\n");
+                if (events[i].events & EPOLLERR)
+                    fprintf(stderr, "epoll error: EPOLLERR\n");
+                if (events[i].events & EPOLLHUP)
+                    fprintf(stderr, "epoll error: EPOLLHUP\n");
                 close(events[i].data.fd);
                 continue;
             }
