@@ -122,9 +122,8 @@ int main(int argc , char *argv[])
             }  
             
             //inform user of socket number - used in send and receive commands 
-            printf("New connection , socket fd is %d , ip is : %s , port : %d 
-                  \n" , new_socket , inet_ntoa(address.sin_addr) , ntohs
-                  (address.sin_port));  
+            printf("New connection , socket fd is %d , ip : %s , port: %d\n" ,
+                new_socket , inet_ntoa(address.sin_addr) , ntohs(address.sin_port));
           
             //send new connection greeting message 
             if( send(new_socket, message, strlen(message), 0) != strlen(message) )  
@@ -155,20 +154,14 @@ int main(int argc , char *argv[])
                 
             if (FD_ISSET( sd , &readfds))  
             {  
-                //Check if it was for closing , and also read the 
-                //incoming message 
+                //Somebody disconnected
                 if ((valread = read( sd , buffer, 1024)) == 0)  
-                {  
-                    //Somebody disconnected , get his details and print 
-                    getpeername(sd , (struct sockaddr*)&address , \
-                        (socklen_t*)&addrlen);  
-                    printf("Host disconnected , ip %s , port %d \n" , 
-                          inet_ntoa(address.sin_addr) , ntohs(address.sin_port));  
-                        
+                {
+                    printf("Socket %d closed\n", sd);
                     //Close the socket and mark as 0 in list for reuse 
-                    close( sd );  
+                    close(sd);  
                     client_socket[i] = 0;  
-                }  
+                }
                     
                 //Echo back the message that came in 
                 else
@@ -176,11 +169,11 @@ int main(int argc , char *argv[])
                     //set the string terminating NULL byte on the end 
                     //of the data read 
                     buffer[valread] = '\0';  
-                    send(sd , buffer , strlen(buffer) , 0 );  
+                    send(sd , buffer , strlen(buffer) , 0);  
                 }  
             }  
         }  
     }  
         
     return 0;  
-}  
+}
