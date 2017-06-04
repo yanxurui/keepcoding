@@ -13,7 +13,6 @@
     
 #define TRUE   1 
 #define FALSE  0 
-#define PORT 8888 
     
 int main(int argc , char *argv[])  
 {  
@@ -24,7 +23,13 @@ int main(int argc , char *argv[])
     struct sockaddr_in address;
         
     char buffer[1025];  //data buffer of 1K 
-        
+    
+    if (argc != 2)
+    {
+        fprintf(stderr, "Usage: %s [port]\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
     //set of socket descriptors 
     fd_set readfds;
         
@@ -56,7 +61,7 @@ int main(int argc , char *argv[])
     //type of socket created 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons( PORT );
+    address.sin_port = htons(atoi(argv[1]));
         
     //bind the socket to localhost port 8888 
     if (bind(master_socket, (struct sockaddr *)&address, sizeof(address))<0)  
@@ -64,7 +69,6 @@ int main(int argc , char *argv[])
         perror("bind failed");
         exit(EXIT_FAILURE);
     }  
-    printf("Listener on port %d \n", PORT);
         
     //try to specify maximum of 3 pending connections for the master socket 
     if (listen(master_socket, 3) < 0)  
