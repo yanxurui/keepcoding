@@ -235,7 +235,7 @@ main(int argc, char *argv[])
                     }
 
                     /* Write the buffer to standard output */
-                    s = write(1, buf, count);
+                    s = write(events[i].data.fd, buf, count);
                     if (s == -1)
                     {
                         perror("write");
