@@ -5,9 +5,9 @@ ext_modules=[
     Extension("add_wrapper",
               sources=["add_wrapper.pyx"],
               extra_objects=['libadd.a']
-              # libraries=["add"],
-              # library_dirs=["."],
-              # runtime_library_dirs=["."]
+              # ,libraries=["add"],
+              # library_dirs=["."]
+              # ,runtime_library_dirs=["."]
     )
 ]
 
