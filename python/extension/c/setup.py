@@ -1,7 +1,8 @@
 from distutils.core import setup, Extension
 
 module1 = Extension('demo',
-                    sources = ['demomodule.c']
+                    sources = ['demomodule.c'],
+                    extra_compile_args = ['-O0', '-g']
                     )
 
 setup (name = 'a demo extension module',
