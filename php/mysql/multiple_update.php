@@ -1,6 +1,13 @@
-<?
+<!-- https://stackoverflow.com/a/39831043/6088837 -->
+<?php
 //Variables
 $NumRows=30000;
+
+$mysqli = new mysqli("127.0.0.1", "root", "", "test", 3306);
+if ($mysqli->connect_errno) {
+    echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+}
+
 
 //These 2 functions need to be filled in
 function InitSQL()
@@ -9,12 +16,13 @@ function InitSQL()
 }
 function RunSQLQuery($Q)
 {
-
+    global $mysqli;
+    $mysqli->query($Q);
 }
 
 //Run the 3 tests
 InitSQL();
-for($i=0;$i<3;$i++)
+for($i=0;$i<4;$i++)
     RunTest($i, $NumRows);
 
 function RunTest($TestNum, $NumRows)
@@ -59,6 +67,19 @@ function RunTest($TestNum, $NumRows)
             $Query[]=sprintf('WHEN %d THEN %d', $i, (($i+5)*1000));
         $Start=microtime(true);
         $DoQuery("UPDATE $TableName SET i2=CASE i1\n".implode("\n", $Query)."\nEND\nWHERE i1 IN (".implode(',', range(1, $NumRows)).')');
+    }
+
+    if($TestNum==3)
+    {
+        $TestName='Multi';
+        $Query=Array();
+        for($i=1;$i<=$NumRows;$i++)
+            $Query[]='UPDATE '.$TableName.' SET i2='.(($i+5)*1000).' WHERE i1='.$i;
+        $Q = implode(';', $Query);
+        $TheQueries[]=$Q;
+        $Start=microtime(true);
+        global $mysqli;
+        $mysqli->multi_query($Q);
     }
 
     print "$TestName: ".(microtime(true)-$Start)."<br>\n";
