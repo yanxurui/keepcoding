@@ -20,7 +20,7 @@ function RunSQLQuery($Q)
     $mysqli->query($Q);
 }
 
-//Run the 3 tests
+//Run the 4 tests
 InitSQL();
 for($i=0;$i<4;$i++)
     RunTest($i, $NumRows);
