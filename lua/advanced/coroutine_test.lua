@@ -30,7 +30,8 @@ end
 
 
 print('-----exchange data ------')
--- The first resume, which has no corresponding yield waiting for it, passes its extra arguments as arguments to the coroutine main function
+-- The first resume, which has no corresponding yield waiting for it, 
+-- passes its extra arguments as arguments to the coroutine main function
 co = coroutine.create(function (a,b,c)
     print("co", a,b,c)
 
@@ -47,4 +48,26 @@ print(coroutine.resume(co, 1, 2, 3))
 print(coroutine.resume(co, "hello"))
 ---> co      hello
 ---> true
+
+
+print('-----resume 2 coroutines ------')
+local co1 = coroutine.create(function ()
+    -- do something here
+    -- waiting
+    local name = coroutine.yield()
+    print('hello, '..name)
+end)
+
+local co2 = coroutine.create(function (name)
+    local name = coroutine.yield()
+    print('goodbye, '..name)
+end)
+
+-- start
+coroutine.resume(co1)
+coroutine.resume(co2)
+
+-- wake up
+coroutine.resume(co1, 'yxr')
+coroutine.resume(co2, 'yxr')
 
