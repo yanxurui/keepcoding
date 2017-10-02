@@ -1,10 +1,10 @@
 #include <stdio.h>
 
-struct S {
-	char *name;
-	int age;
-};
+typedef struct {
+    char *name;
+    int age;
+} S;
 
-void func(int age) {
-	printf("I am %d years old!\n", age);
+void func(S *s) {
+    printf("I am %d years old!\n", s->age);
 }

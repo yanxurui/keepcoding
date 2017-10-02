@@ -1,17 +1,18 @@
 // If a.c can not be changed and we still want to use structure definition in it, 
 // we have to duplicate a definition in multiple source files
-struct S {
-	char *name;
-	int age;
-};
 
-void func(int age);
+typedef struct {
+    char *name;
+    int age;
+} S;
+
+void func(S *s);
 
 int main(int argc, char const *argv[])
 {
-	struct  S s;
-	s.name = "jobs";
-	s.age = 25;
-	func(s.age);
-	return 0;
+    S s;
+    s.name = "jobs";
+    s.age = 25;
+    func(&s);
+    return 0;
 }
