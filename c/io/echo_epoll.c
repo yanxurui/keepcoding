@@ -251,7 +251,6 @@ main(int argc, char *argv[])
                         break;
                     }
 
-                    /* Write the buffer to standard output */
                     s = write(events[i].data.fd, buf, count);
                     if (s == -1)
                     {
