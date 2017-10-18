@@ -1,0 +1,1055 @@
+Trying:
+    X = BadGetAttribute()
+Expecting nothing
+ok
+Trying:
+    X.a
+Expecting:
+    Traceback (most recent call last):
+        ...
+    RecursionError: maximum recursion depth exceeded while calling a Python object
+**********************************************************************
+File "dead_loop_by_getattribute.py", line 6, in dead_loop_by_getattribute.BadGetAttribute
+Failed example:
+    X.a
+Expected:
+    Traceback (most recent call last):
+        ...
+    RecursionError: maximum recursion depth exceeded while calling a Python object
+Got:
+    get: a
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    get: other
+    Traceback (most recent call last):
+      File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/doctest.py", line 1315, in __run
+        compileflags, 1) in test.globs
+      File "<doctest dead_loop_by_getattribute.BadGetAttribute[1]>", line 1, in <module>
+        X.a
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 15, in __getattribute__
+        return self.other
+      File "dead_loop_by_getattribute.py", line 14, in __getattribute__
+        print('get: ' + name)
+      File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/StringIO.py", line 216, in write
+        if not isinstance(s, basestring):
+    RuntimeError: maximum recursion depth exceeded while calling a Python object
+Trying:
+    X = GoodGetAttribute()
+Expecting nothing
+ok
+Trying:
+    X.a
+Expecting:
+    get: a
+    'I am a'
+ok
+Trying:
+    X = GoodSetAttribute()
+Expecting:
+    set: a = I am a
+ok
+Trying:
+    X.a = 'A'
+Expecting:
+    set: a = A
+ok
+Trying:
+    X.a
+Expecting:
+    'A'
+ok
+7 items had no tests:
+    dead_loop_by_getattribute
+    dead_loop_by_getattribute.BadGetAttribute.__getattribute__
+    dead_loop_by_getattribute.BadGetAttribute.__init__
+    dead_loop_by_getattribute.GoodGetAttribute.__getattribute__
+    dead_loop_by_getattribute.GoodGetAttribute.__init__
+    dead_loop_by_getattribute.GoodSetAttribute.__init__
+    dead_loop_by_getattribute.GoodSetAttribute.__setattr__
+2 items passed all tests:
+   2 tests in dead_loop_by_getattribute.GoodGetAttribute
+   3 tests in dead_loop_by_getattribute.GoodSetAttribute
+**********************************************************************
+1 items had failures:
+   1 of   2 in dead_loop_by_getattribute.BadGetAttribute
+7 tests in 10 items.
+6 passed and 1 failed.
+***Test Failed*** 1 failures.
