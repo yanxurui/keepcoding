@@ -1,0 +1,12 @@
+# Object files
+*.o
+
+# Libraries
+*.a
+
+# Shared objects
+*.so
+
+# Python byte code
+*.pyc
+
