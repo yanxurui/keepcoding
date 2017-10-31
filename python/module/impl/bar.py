@@ -1,4 +1,4 @@
 # can not import bar2.py from current directory
-# import bar2
+# from bar2 import b
 
 a=1
