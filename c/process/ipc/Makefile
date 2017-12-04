@@ -7,6 +7,3 @@ all: $(BIN)
 
 clean:
 	rm -rf $(BIN)
-
-%.out: %.c
-	$(CC) -o $@ $<
