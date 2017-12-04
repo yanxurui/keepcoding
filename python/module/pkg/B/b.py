@@ -1,3 +1,4 @@
 from ..A import a
 
-a.say('hello world')
+if __name__ == '__main__':
+    a.say('hello world')
