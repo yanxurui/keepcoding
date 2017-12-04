@@ -24,7 +24,7 @@ int main(void)
     fd = open(FIFO_NAME, O_WRONLY);
     printf("got a reader--type some stuff\n");
 
-    while (gets(s), !feof(stdin)) {
+    while (fgets(s, sizeof s, stdin), !feof(stdin)) {
         if ((num = write(fd, s, strlen(s))) == -1)
             perror("write");
         else
