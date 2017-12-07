@@ -1,6 +1,3 @@
-import logging
-logging.basicConfig(level=logging.INFO)
-
 from testfunc import test
 # from pt_recursive import solve
 # from pt_iteration1 import solve
