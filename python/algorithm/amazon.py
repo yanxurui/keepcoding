@@ -1,5 +1,5 @@
 # Amazon SDE online assessment
-# state: 惨败
+# status: can't be worse
 
 def countKDistinctSubstrings(inputString, num):
     # how many substrings have num distince characters
