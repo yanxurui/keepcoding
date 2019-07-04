@@ -1,27 +1,23 @@
-from copy import deepcopy
-from common import TreeNode, unordered_equal
+from common import unordered_equal
 
-# Definition for a binary tree node.
-# class TreeNode(object):
-#     def __init__(self, x):
-#         self.val = x
-#         self.left = None
-#         self.right = None
 
 class Solution(object):
     def recursive(self, left, right):
         trees = []
         if left > right:
-            return [None]
+            return [[None]]
         for i in range(left, right+1):
-            node = TreeNode(i)
             left_children = self.recursive(left, i-1)                
             right_children = self.recursive(i+1, right)
             for left_child in left_children:
-                node.left = left_child
                 for right_child in right_children:
-                    node.right = right_child
-                    trees.append(deepcopy(node))
+                    t = [i]
+                    t += left_child
+                    t += right_child
+                    while t[-1] is None:
+                        t.pop()
+                    # translate from In-order traversal to by layer ??
+                    trees.append(t)
         return trees
 
     def generateTrees(self, n):
@@ -29,13 +25,8 @@ class Solution(object):
         :type n: int
         :rtype: List[TreeNode]
         """
-        ans = []
-        import pdb
-        # pdb.set_trace()
         trees = self.recursive(1, n)
-        for tree in trees:
-            ans.append(tree.to_list())
-        return ans
+        return trees
 
 
 if __name__ == '__main__':
