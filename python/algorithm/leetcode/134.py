@@ -7,20 +7,24 @@ class Solution(object):
         """
         n = len(gas)
         diff = []
+        max_up = 0
+        k = 0
+        s = 0
         for i in range(n):
-            diff.append(gas[i] - cost[i])
-        for i in range(n):
-            if diff[i] >= 0:
-                s = diff[i]
-                for j in range(1, n):
-                    k = (i+j) % n
-                    s += diff[k]
-                    if s < 0:
-                        break
-                if s >= 0:
-                    return i
-        return -1
+            d = gas[i] - cost[i]
+            diff.append(d)
+            if -s > max_up:
+                max_up = -s
+                k = i
+            s += d
 
+        s = 0
+        for j in range(n):
+            m = (k+j) % n
+            s += diff[m] 
+            if s < 0:
+                return -1
+        return k
 
         
 if __name__ == '__main__':
