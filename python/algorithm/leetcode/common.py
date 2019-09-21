@@ -43,10 +43,15 @@ class ListNode(object):
 
     def __str__(p):
         vals = []
+        count = 0
         while p is not None:
             vals.append(p.val)
             p = p.next
-        return str(vals)
+            count += 1
+            if count >= 10:
+                vals.append('...')
+                break
+        return ','.join(map(str, vals))
 
 
 # Definition for a binary tree node.

@@ -1,4 +1,5 @@
 # https://leetcode.com/problems/word-break/discuss/43790/Java-implementation-using-DP-in-two-ways
+
 class Solution(object):
     def wordBreak(self, s, wordDict):
         """
@@ -12,9 +13,6 @@ class Solution(object):
 
         for i in range(1, n+1):
             for j in range(i):
-                if i == 4 and j==0:
-                    import pdb
-                    # pdb.set_trace()
                 f[i] = f[i] or f[j] and (s[j:i] in wordDict)
         return f[n]
 
