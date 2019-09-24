@@ -1,0 +1,1 @@
+select (select Salary from Employee group by Salary order by Salary desc limit 1,1) as SecondHighestSalary;
