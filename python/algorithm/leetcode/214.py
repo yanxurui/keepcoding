@@ -1,25 +1,23 @@
+# https://leetcode.com/problems/shortest-palindrome/discuss/60141/C%2B%2B-8-ms-KMP-based-O(n)-time-and-O(n)-memory-solution
+
 class Solution(object):
     def shortestPalindrome(self, s):
         """
         :type s: str
         :rtype: str
         """
-        if len(s) < 2:
-            return s
-        # abac => a#b#a#c
-        # bbc => b#b#c
-        buf = '#'.join(s)
-        for m in range((len(buf)-1)//2, -1, -1):
-            if self.isPalindrome(buf, m):
-                break
-        buf = buf[2*m+1:][::-1] + buf
-        return ''.join([c for i,c in enumerate(buf) if i%2==0])
-
-    def isPalindrome(self, buf, m):
-        for i in range(1, m+1):
-            if buf[m-i] != buf[m+i]:
-                return False
-        return True
+        rs = s[::-1]
+        mirror = s + '#' + rs
+        # run KMP on mirror
+        lps = [0] * len(mirror)
+        k = 0
+        for i in range(1, len(mirror)):
+            while k > 0 and mirror[i] != mirror[k]:
+                k = lps[k-1]
+            if mirror[i] == mirror[k]:
+                k += 1
+            lps[i] = k
+        return rs[:len(rs)-lps[-1]] + s
 
 
 
