@@ -1,3 +1,7 @@
+# https://leetcode.com/problems/minimum-number-of-refueling-stops/discuss/149839/DP-O(N2)-and-Priority-Queue-O(NlogN)
+
+import heapq
+
 class Solution(object):
     def minRefuelStops(self, target, startFuel, stations):
         """
@@ -6,27 +10,24 @@ class Solution(object):
         :type stations: List[List[int]]
         :rtype: int
         """
-        return self.dfs(0, target, startFuel, stations, 0)
-
-    def dfs(self, start, target, startFuel, stations, stops):
-        if not stations:
-            if startFuel < (target - start):
-                return -1
-            else:
-                return stops
-        else:
-            if startFuel < stations[0][0] - start:
-                return -1
-            else:
-                # no refuel
-                a = self.dfs(stations[0][0], target, startFuel-(stations[0][0]-start), stations[1:], stops)
-                # refuel
-                b = self.dfs(stations[0][0], target, startFuel-(stations[0][0]-start)+stations[0][1], stations[1:], stops+1)
-                if a == -1 or b == -1:
-                    return max(a, b)
+        cur = startFuel
+        q = []
+        rst = 0
+        i = 0
+        while cur < target:
+            while i < len(stations):
+                s = stations[i]
+                if cur >= s[0]:
+                    heapq.heappush(q, -s[1])
                 else:
-                    return min(a, b)
-
+                    break
+                i += 1
+            if q:
+                cur += -heapq.heappop(q)
+                rst += 1
+            else:
+                return -1
+        return rst
         
 
 if __name__ == '__main__':
@@ -88,7 +89,7 @@ if __name__ == '__main__':
                     [997,162]
                 ]
             ),
-            0
+            6
         )
     ]
     test(Solution().minRefuelStops, test_data)
