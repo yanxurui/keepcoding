@@ -1,3 +1,5 @@
+# https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/discuss/64963/3-lines-with-O(1)-space-1-Liners-Alternatives
+
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, x):
@@ -7,31 +9,13 @@
 
 class Solution:
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
-        path1 = []
-        path2 = []
-        self.traverse(root, p, path1)
-        self.traverse(root, q, path2)
-
-        for i, (n1,n2) in enumerate(zip(path1, path2)):
-            if n1 != n2:
-                break
-            if n1 == p or n1 == q:
-                i += 1
-                break
-        return path1[i-1]
-
-    def traverse(self, root, v, res):
-        if not root:
-            return False
-        res.append(root)
-        if root == v:
-            return True
-        else:
-            if self.traverse(root.left, v, res) or self.traverse(root.right, v, res):
-                return True
+        while root:
+            if p.val < root.val > q.val:
+                root = root.left
+            elif p.val > root.val < q.val:
+                root = root.right
             else:
-                res.pop()
-                return False
+                return root
 
 
 if __name__ == '__main__':
