@@ -19,6 +19,7 @@ class Solution:
                 rst.append(nums[q[0]])
         return rst
 
+
 if __name__ == '__main__':
     from testfunc import test
     test_data = [
