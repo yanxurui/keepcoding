@@ -1,14 +1,9 @@
-class Solution(object):
-    def maxmin(self, m1, m2, func):
-        if m1 is not None and m2 is not None:
-            return func(m1, m2)
-        elif m1 is not None:
-            return m1
-        elif m2 is not None:
-            return m2
-        else:
-            raise Exception('both are Nones')
+# https://leetcode.com/problems/median-of-two-sorted-arrays/discuss/2496/Concise-JAVA-solution-based-on-Binary-Search
 
+import sys
+INT_MAX = sys.maxsize
+
+class Solution(object):
     def findMedianSortedArrays(self, nums1, nums2):
         """
         :type nums1: List[int]
@@ -17,43 +12,35 @@ class Solution(object):
 
         overall run time complexity should be O(log (m+n))
         """
-        n = len(nums1) + len(nums2)
-        i, j = 0, 0
-        while i+j < n//2: # i+j is the number of numbers that have been processed
-            if i < len(nums1) and j < len(nums2):
-                if nums1[i] <= nums2[j]:
-                    i += 1
-                else:
-                    j += 1
-            elif i < len(nums1):
-                i += 1
-            else:
-                assert j < len(nums2)
-                j += 1
-
-        if n % 2 == 1:
-            m1, m2 = None, None
-            if i < len(nums1):
-                m1 = nums1[i]
-            if j < len(nums2):
-                m2 = nums2[j]
-            m = self.maxmin(m1, m2, min)
+        m = len(nums1)
+        n = len(nums2)
+        if m == 0 and n == 0:
+            return 0
+        if (m+n)%2 == 0:
+            return (self.findKth(nums1, 0, nums2, 0, (m+n)//2) + self.findKth(nums1, 0, nums2, 0, (m+n)//2+1))/2
         else:
-            m1, m2 = None, None
-            if i-1 >= 0:
-                m1 = nums1[i-1]
-            if j-1 >= 0:
-                m2 = nums2[j-1]
-            left = self.maxmin(m1, m2, max)
+            return self.findKth(nums1, 0, nums2, 0, (m+n)//2+1)
 
-            m1, m2 = None, None
-            if i < len(nums1):
-                m1 = nums1[i]
-            if j < len(nums2):
-                m2 = nums2[j]
-            right = self.maxmin(m1, m2, min)
-            m = (left + right)/2.0
-        return m
+    def findKth(self, nums1, start1, nums2, start2, k):
+        if start1 >= len(nums1):
+            return nums2[start2+k-1]
+        if start2 >= len(nums2):
+            return nums1[start1+k-1]
+        if k == 1:
+            return min(nums1[start1], nums2[start2])
+        mid1, mid2 = INT_MAX, INT_MAX
+        m = k//2 # k=4, m=2; k=5, m=2
+        if start1 + m - 1 < len(nums1):
+            mid1 = nums1[start1+m-1]
+        if start2 + m - 1 < len(nums2):
+            mid2 = nums2[start2+m-1]
+        if mid1 < mid2:
+            return self.findKth(nums1, start1+m, nums2, start2, k-m)
+        else:
+            return self.findKth(nums1, start1, nums2, start2+m, k-m)
+
+        
+        
 
 
 if __name__ == '__main__':
