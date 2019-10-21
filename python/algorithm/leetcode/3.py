@@ -1,24 +1,15 @@
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
-        n = len(s)
-        if n == 0:
-            return 0
-        lo = 0
-        maxLen = 1
+        maxLen = 0
         i = 0
         d = {}
-        d[s[0]] = 0
-        for j in range(1, n):
-            if s[j] not in d:
-                d[s[j]] = j
+        for j in range(len(s)):
+            if s[j] not in d or d[s[j]] < i:
                 if j - i + 1 > maxLen:
                     maxLen = j - i + 1
-                    lo = i
             else:
                 i = d[s[j]] + 1
-                d = {}
-                for k in range(i, j+1):
-                    d[s[k]] = k
+            d[s[j]] = j
         return maxLen
 
 
@@ -41,6 +32,10 @@ if __name__ == '__main__':
         (
             'abcad',
             4
+        ),
+        (
+            "tmmzuxt",
+            5
         ),
     ]
     test(Solution().lengthOfLongestSubstring, test_data)
