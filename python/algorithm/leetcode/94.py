@@ -1,4 +1,4 @@
-from data_structure import TreeNode
+from common import TreeNode
 
 class Solution(object):
     def inorderTraversal(self, root):
@@ -6,26 +6,16 @@ class Solution(object):
         :type root: TreeNode
         :rtype: List[int]
         """
-        print(root)
         ans = []
-        n = root
-        stack = [None]
-        new = True
-        while n:
-            if new and n.left:
-                stack.append(n)
-                n = n.left
-                continue
-
-            ans.append(n.val)
-
-            if n.right:
-                n = n.right
-                new = True
-            else:
-                n = stack.pop()
-                new = False
-
+        cur = root
+        stack = []
+        while cur or stack:
+            while cur:
+                stack.append(cur)
+                cur = cur.left
+            cur = stack.pop()
+            ans.append(cur.val)
+            cur = cur.right
         return ans
 
 

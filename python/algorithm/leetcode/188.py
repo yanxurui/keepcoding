@@ -22,6 +22,31 @@ class Solution:
         return prof
 
 
+import sys
+INT_MAX = sys.maxsize
+INT_MIN = -INT_MAX-1
+
+class Solution2:
+    def maxProfit(self, k, prices) -> int:
+        if k >= len(prices)//2:
+            return self.quickSolver(prices)
+
+        tmp = [[INT_MIN, 0] for i in range(k+1)]
+        # tmp[i] means the max money after buy or sell the i-th time
+        for p in prices:
+            for i in range(1, k+1):
+                tmp[i][0] = max(tmp[i][0], tmp[i-1][1] - p) # buy at p
+                tmp[i][1] = max(tmp[i][1], tmp[i][0] + p) # sell at p
+        return tmp[k][1]
+    
+    def quickSolver(self, prices):
+        prof = 0
+        for i in range(1, len(prices)):
+            d = prices[i] - prices[i-1]
+            if d > 0:
+                prof += d
+        return prof
+
 if __name__ == '__main__':
     from testfunc import test
     
@@ -76,4 +101,4 @@ if __name__ == '__main__':
             0
         )
     ]
-    test(Solution().maxProfit, test_data)
+    test(Solution2().maxProfit, test_data)
