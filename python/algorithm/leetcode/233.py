@@ -10,9 +10,9 @@ class Solution:
             # >= 2: a/10+1
             # 0, 1: a/10
             ones += (a+8)//10 * m
+            # == 1
             if a%10 == 1:
                 ones += (b+1)
-            # == 1
             m *= 10
         return ones
 
