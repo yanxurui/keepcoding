@@ -9,18 +9,22 @@ class Solution:
             edges[t[0]].append(t[1])
         for k, v in edges.items():
             v.sort()
-        d = 'JFK'
-        return self.backtrack(edges, d, N)
-
-    def backtrack(self, edges, d, N):
-        rst = [d]
-        for i, a in enumerate(edges[d]):
-            edges[d].pop(i)
-            tmp = self.backtrack(edges, a, N-1)
-            if len(tmp) == N:
-                return rst + tmp
-            edges[d].insert(i, a)
+        rst = ['JFK']
+        self.backtrack(edges, rst, N)
         return rst
+
+    def backtrack(self, edges, tmp, N):
+        d = tmp[-1]
+        for i in range(len(edges[d])):
+            a = edges[d].pop(i)
+            tmp.append(a)
+            self.backtrack(edges, tmp, N)
+            if len(tmp)-1 == N:
+                # found
+                return
+            else:
+                tmp.pop()
+                edges[d].insert(i, a)
 
 
 if __name__ == '__main__':

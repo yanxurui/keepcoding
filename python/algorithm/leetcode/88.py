@@ -39,6 +39,6 @@ if __name__ == '__main__':
                 [2,5,6], 3
             ),
             [1,2,2,3,5,6]
-        ),
+        )
     ]
     test(wrapper, test_data)

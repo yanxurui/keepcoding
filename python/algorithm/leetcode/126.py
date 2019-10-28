@@ -26,7 +26,7 @@ class Solution(object):
                             neww = w[:i]+c+w[i+1:]
                             if neww in wordList:
                                 newlayer[neww] += [l+[neww] for l in layer[w]]
-            wordList -= set(newlayer.keys())
+            wordList -= set(newlayer.keys()) # very important
             layer = newlayer
         return res
 

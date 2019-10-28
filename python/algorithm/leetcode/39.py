@@ -10,19 +10,19 @@ class Solution(object):
         candidates.sort()
         ans = []
         if len(candidates) == 0:
-            return ans
+            return []
         self.backtrack(candidates, ans, list(), target, 0)
         return ans
 
     def backtrack(self, nums, ans, tmp, remain, start):
-        if remain < 0:
-            return
-        elif remain == 0:
-            ans.append(tmp)
+        if remain == 0:
+            ans.append(list(tmp))
         else:
             for i in range(start, len(nums)):
+                if remain < nums[i]:
+                    break
                 tmp.append(nums[i])
-                self.backtrack(nums, ans, list(tmp), remain-nums[i], i) # i not i+1
+                self.backtrack(nums, ans, tmp, remain-nums[i], i) # i not i+1
                 tmp.pop()
 
 

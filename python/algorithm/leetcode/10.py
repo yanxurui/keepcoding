@@ -15,6 +15,7 @@ class Solution:
                 elif p[j] == '*':
                     if j >= 1:
                         if p[j-1] == s[i] or p[j-1] == '.':
+                            # match >1, 1, 0
                             dp[i+1][j+1] = dp[i][j+1] or \
                                            dp[i][j-1] or \
                                            dp[i+1][j-1]

@@ -1,26 +1,13 @@
 class Solution:
-    def __init__(self):
-        self.table = {}
-
     def canJump(self, nums):
-        n = len(nums)
-        if n == 1:
-            return True
-        if not (0 in nums):
-            return True
-        assert n > 1
-        if n-1 in self.table:
-            return self.table[n-1]
-        ans = False
-        import pdb
-        # pdb.set_trace()
-        for j in range(n-2, -1, -1):
-            if nums[j] >= n - 1 - j:
-                if self.canJump(nums[:j+1]):
-                    ans = True
-                    break
-        self.table[n-1] = ans
-        return ans
+        reach = 0
+        i = 0
+        while i < len(nums) and i <= reach:
+            reach = max(reach, i+nums[i])
+            if reach >= len(nums)-1:
+                return True
+            i += 1
+        return False
 
 
 def wrapper(nums):

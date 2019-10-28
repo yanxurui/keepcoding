@@ -14,6 +14,8 @@ class Solution(object):
         for i in range(1, n+1):
             for j in range(i):
                 f[i] = f[i] or f[j] and (s[j:i] in wordDict)
+                if f[i]:
+                    break
         return f[n]
 
 

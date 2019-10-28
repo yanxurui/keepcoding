@@ -19,7 +19,6 @@ class Solution(object):
             while nums[i] > 0 and nums[i] <= n:
                 if not self.swap(nums, i, nums[i]-1):
                     break
-        print(nums)
         for i in range(len(nums)):
             if i+1 != nums[i]:
                 return i+1

@@ -6,26 +6,24 @@ class Solution(object):
         :rtype: List[List[int]]
         """
         ans = []
-        for interval in intervals:
+        for i in range(len(intervals)):
+            interval = intervals[i]
             if interval[0] < newInterval[0]:
                 if interval[1] < newInterval[0]:
                     ans.append(interval)
                 elif interval[1] < newInterval[1]:
                     newInterval[0] = interval[0]
                 else:
-                    ans = intervals
-                    break
+                    return intervals
             elif interval[0] <= newInterval[1]:
-                if interval[1] <= newInterval[1]:
-                    continue
-                else:
-                    ans.append([newInterval[0], interval[1]])
+                if interval[1] > newInterval[1]:
+                    newInterval[1] = interval[1]
             else:
-                if not (ans and ans[-1][1] >= newInterval[1]):
-                    ans.append(newInterval)
-                ans.append(interval)
-
-        if not (ans and ans[-1][1] >= newInterval[1]):
+                ans.append(newInterval)
+                ans.extend(intervals[i:])
+                newInterval = None
+                break
+        if newInterval:
             ans.append(newInterval)
         return ans
 
@@ -47,6 +45,27 @@ if __name__ == '__main__':
                 [4,8]
             ),
             [[1,2],[3,10],[12,16]]
-        )
+        ),
+        (
+            (
+                [],
+                [5,7]
+            ),
+            [[5, 7]]
+        ),
+        (
+            (
+                [[1,5]],
+                [2,3]
+            ),
+            [[1,5]]
+        ),
+        (
+            (
+                [[1,5]],
+                [2,7]
+            ),
+            [[1,7]]
+        ),
     ]
     test(Solution().insert, test_data)

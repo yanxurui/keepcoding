@@ -8,26 +8,26 @@ class Solution(object):
         n = len(nums)
         if n <= 1:
             return
-        import pdb
-        # pdb.set_trace()
-
-        for i in range(n-2, -1, -1):
-            a = nums[i]
-            m = None
-            k = None
-            for j in range(i+1, n):
-                b = nums[j]
-                if b > a:
-                    if m is None or b < m:
-                        k = j
-                        m = b
-            if m is not None:
-                nums[i] = m
-                nums[k] = a
-                nums[i+1:] = sorted(nums[i+1:])
-                return
-        nums.sort()
+        # 1. Find the largest index k such that nums[k] < nums[k + 1].
+        k = n-2
+        while k>=0:
+            if nums[k] < nums[k+1]:
+                break
+            k -= 1
+        # If no such index exists, just reverse nums and done.
+        if k == -1:
+            nums.sort()
+        # 2. Find the largest index l > k such that nums[k] < nums[l].
+        else:
+            for l in range(n-1, k, -1):
+                if nums[l] > nums[k]:
+                    break
+            tmp = nums[l]
+            nums[l] = nums[k]
+            nums[k] = tmp
+            nums[k+1:] = sorted(nums[k+1:])
         return
+
 
 # https://leetcode.com/problems/next-permutation/discuss/13867/C%2B%2B-from-Wikipedia
 class Solution2(object):

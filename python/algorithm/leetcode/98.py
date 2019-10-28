@@ -8,29 +8,26 @@ from common import TreeNode
 #         self.left = None
 #         self.right = None
 
+
+import sys
+
+INT_MAX = sys.maxsize
+
 class Solution(object):
-    def recursive(self, root, l, g):
+    def recursive(self, root, l, r):
         if root is None:
             return True
-        if l:
-            if not root.val < l:
-                return False
-        if g:
-            if not root.val > g:
-                return False
-        if root.left:
-            if not (root.left.val < root.val and self.recursive(root.left, l=root.val, g=g)):
-                return False
-        if root.right:
-            if not (root.right.val > root.val and self.recursive(root.right, l=l, g=root.val)):
-                return False
-        return True
+        if l < root.val < r:
+            if self.recursive(root.left, l, root.val) and self.recursive(root.right, root.val, r):
+                return True
+        return False
+
     def isValidBST(self, root):
         """
         :type root: TreeNode
         :rtype: bool
         """
-        return self.recursive(root, None, None)
+        return self.recursive(root, -INT_MAX, INT_MAX)
         
 
 if __name__ == '__main__':
@@ -51,6 +48,10 @@ if __name__ == '__main__':
         ),
         (
             TreeNode.create([10,5,15,None,None,6,20]),
+            False
+        ),
+        (
+            TreeNode.create([1, 1]),
             False
         )
     ]

@@ -16,7 +16,7 @@ class Solution(object):
                 num = 10*num + int(c)
             elif c == '+':
                 rst += num * op
-                op = 1 # next operator
+                op = 1
                 num = 0
             elif c == '-':
                 rst += num * op

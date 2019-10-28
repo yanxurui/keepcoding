@@ -5,9 +5,7 @@ class Solution(object):
         else:
             for i in nums:
                 if i not in tmp:
-                    tmp.append(i)
-                    self.backtrack(nums, ans, tmp)
-                    tmp.pop()
+                    self.backtrack(nums, ans, tmp+[i])
 
     def permute(self, nums):
         """
@@ -41,6 +39,7 @@ class Solution2(object):
 
 if __name__ == '__main__':
     from testfunc import test
+    from common import unordered_equal
     test_data = [
         (
             [1,2,3],
@@ -54,5 +53,5 @@ if __name__ == '__main__':
             ]
         )
     ]
-    test(Solution2().permute, test_data)
+    test(Solution2().permute, test_data, compare=unordered_equal)
 
