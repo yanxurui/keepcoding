@@ -1,3 +1,5 @@
+# https://leetcode.com/problems/multiply-strings/discuss/17605/Easiest-JAVA-Solution-with-Graph-Explanation
+
 class Solution(object):
     def multiply(self, num1, num2):
         """
@@ -5,53 +7,22 @@ class Solution(object):
         :type num2: str
         :rtype: str
         """
-
-        if len(num1) > len(num2):
-            tmp = num1
-            num1 = num2
-            num2 = tmp
-        N1, N2 = [], []
-        for d1 in num1[::-1]:
-            N1.append(int(d1))
-        for d2 in num2[::-1]:
-            N2.append(int(d2))
-        T = []
-
-        for d1 in N1:
-            t = []
-            c = 0
-            for d2 in N2:
-                tmp = d1*d2+c
-                t.append(tmp%10)
-                c = tmp/10
-            if c > 0:
-                t.append(c)
-            T.append(t)
-
-        # import pdb
-        # pdb.set_trace()
-        prod = []
-        c = 0
-        left = 0
-        for i in range(len(T)+len(T[-1])-1):
-            tmp = c
-            for j in range(left, min(i+1, len(T))):
-                if len(T[j])+j > i:
-                    tmp += T[j][i-j]
-                else:
-                    left = j+1
-            prod.append(tmp%10)
-            c = tmp / 10
-        if c > 0:
-            prod.append(c)
-
-        # remove leading 0
-        prod = prod[::-1]
-        s = 0
-        while s < len(prod)-1 and prod[s] == 0:
-            s += 1
-        prod = prod[s:]
-        return ''.join(map(str, prod))
+        l1 = len(num1)
+        l2 = len(num2)
+        buf = [0] * (l1+l2)
+        # num1[i] * num2[j] will be placed at [i+j, i+j+1]
+        for i in range(l1-1, -1, -1):
+            for j in range(l2-1, -1, -1):
+                mul = int(num1[i])*int(num2[j])
+                p1 = i + j
+                p2 = p1 + 1
+                s = buf[p2] + mul
+                buf[p2] = s%10
+                buf[p1] += s//10
+        i = 0
+        while i < len(buf)-1 and buf[i] == 0:
+            i += 1
+        return ''.join(map(str, buf[i:]))
 
 
 if __name__ == '__main__':

@@ -23,6 +23,25 @@ class Solution:
             slow = nums[slow]
         return slow
 
+def swap(nums, i, j):
+    if nums[i] == nums[j]:
+        return False
+    tmp = nums[i]
+    nums[i] = nums[j]
+    nums[j] = tmp
+    return True
+
+
+class Solution2:
+    def findDuplicate(self, nums: List[int]) -> int:
+        for i, n in enumerate(nums):
+            while i != n:
+                if swap(nums, i, n):
+                    n = nums[i]
+                else:
+                    return n
+        return nums[0]
+
 
 if __name__ == '__main__':
     from testfunc import test
@@ -39,7 +58,11 @@ if __name__ == '__main__':
         (
             [1,1,1,3],
             1
+        ),
+        (
+            [1,1,2,3],
+            1
         )
     ]
-    test(Solution().findDuplicate, test_data)
+    test(Solution2().findDuplicate, test_data)
 

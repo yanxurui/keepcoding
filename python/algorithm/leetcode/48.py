@@ -13,8 +13,33 @@ class Solution(object):
                 matrix[n-1-i][n-1-j] = matrix[j][n-1-i]
                 matrix[j][n-1-i] = tmp
 
+# https://leetcode.com/problems/rotate-image/discuss/18872/A-common-method-to-rotate-the-image
+class Solution2(object):
+    def rotate(self, matrix):
+        """
+        :type matrix: List[List[int]]
+        :rtype: None Do not return anything, modify matrix in-place instead.
+        """
+        def reverse(arr):
+            n = len(arr)
+            for i in range(n//2):
+                tmp = arr[i]
+                arr[i] = arr[n-1-i]
+                arr[n-1-i] = tmp
+        n = len(matrix)
+        for i in range(n):
+            for j in range(i):
+                tmp = matrix[i][j]
+                matrix[i][j] = matrix[j][i]
+                matrix[j][i] = tmp
+
+        for i in range(n):
+            reverse(matrix[i])
+
+
+
 def wrapper(matrix):
-    Solution().rotate(matrix)
+    Solution2().rotate(matrix)
     return matrix
 
 

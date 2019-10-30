@@ -76,6 +76,10 @@ if __name__ == '__main__':
         (
             ("aaaaaaa", "*a"),
             True
+        ),
+        (
+            ("aacab", "*a*b"),
+            True
         )
     ]
     test(Solution().isMatch, test_data)

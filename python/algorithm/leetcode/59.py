@@ -29,6 +29,23 @@ class Solution(object):
             start += 1
         return ans
 
+class Solution2(object):
+    def generateMatrix(self, n):
+        """
+        :type n: int
+        :rtype: List[List[int]]
+        """
+        matrix = [[0 for j in range(n)] for i in range(n)]
+        i = j = 0
+        di, dj = 0, 1
+        for k in range(1, n*n+1):
+            matrix[i][j] = k
+            if matrix[(i+di)%n][(j+dj)%n]:
+                di, dj = dj, -di
+            i += di
+            j += dj
+        return matrix
+
 
 if __name__ == '__main__':
     from testfunc import test
@@ -56,4 +73,4 @@ if __name__ == '__main__':
             ]
         )
     ]
-    test(Solution().generateMatrix, test_data)
+    test(Solution2().generateMatrix, test_data)

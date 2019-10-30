@@ -7,12 +7,7 @@ class Solution(object):
         new_path = []
         prev = None
         for p in path.split('/'):
-            if p == '':
-                continue
-            elif p == '/':
-                if prev == '/':
-                    continue
-            elif p == '.':
+            if p == '' or p == '/' or p == '.':
                 continue
             elif p == '..':
                 if len(new_path) > 0:

@@ -45,6 +45,25 @@ class Solution(object):
         return True
 
 
+class Solution2(object):
+    def isSymmetric(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        if root is None:
+            return True
+        return self.util(root.left, root.right)
+
+    def util(self, left, right):
+        if left is None or right is None:
+            return left == right
+        if left.val != right.val:
+            return False
+        return self.util(left.left, right.right) and self.util(left.right, right.left)
+
+
+
 if __name__ == '__main__':
     from testfunc import test
 
@@ -58,5 +77,5 @@ if __name__ == '__main__':
             False
         )
     ]
-    test(Solution().isSymmetric, test_data)
+    test(Solution2().isSymmetric, test_data)
 

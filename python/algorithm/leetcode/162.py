@@ -7,18 +7,8 @@ class Solution(object):
         rise = None
         drop = None
         for i in range(len(nums)):
-            if i == 0 or nums[i] > nums[i-1]:
-                rise = True
-                drop = False
-            else:
-                if rise:
-                    return i - 1
-                else:
-                    rise = False
-                    drop = True
-            if i == len(nums) - 1:
-                if rise:
-                    return i
+            if (i == 0 or nums[i] > nums[i-1]) and (i == len(nums)-1 or nums[i] > nums[i+1]):
+                return i
 
 
 if __name__ == '__main__':
