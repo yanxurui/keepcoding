@@ -7,6 +7,7 @@ class MyCircularQueue:
         self.size = k
         self.front = 0
         self.rear = -1
+        self.len = 0
         self.q = [0] * self.size
         
 
@@ -15,8 +16,9 @@ class MyCircularQueue:
         Insert an element into the circular queue. Return true if the operation is successful.
         """
         if not self.isFull():
-            self.rear += 1
-            self.q[self.rear%self.size] = value
+            self.rear = (self.rear + 1) % self.size
+            self.q[self.rear] = value
+            self.len += 1
             return True
         else:
             return False
@@ -28,7 +30,8 @@ class MyCircularQueue:
         Delete an element from the circular queue. Return true if the operation is successful.
         """
         if not self.isEmpty():
-            self.front += 1
+            self.front = (self.front + 1) % self.size
+            self.len -= 1
             return True
         else:
             return False
@@ -39,7 +42,7 @@ class MyCircularQueue:
         Get the front item from the queue.
         """
         if not self.isEmpty():
-            return self.q[self.front%self.size]
+            return self.q[self.front]
         return -1
         
 
@@ -48,7 +51,7 @@ class MyCircularQueue:
         Get the last item from the queue.
         """
         if not self.isEmpty():
-            return self.q[self.rear%self.size]
+            return self.q[self.rear]
         return -1
         
 
@@ -56,14 +59,14 @@ class MyCircularQueue:
         """
         Checks whether the circular queue is empty or not.
         """
-        return self.front > self.rear
+        return self.len == 0
         
 
     def isFull(self) -> bool:
         """
         Checks whether the circular queue is full or not.
         """
-        return self.rear - self.front == self.size -1
+        return self.len == self.size
 
         
 
