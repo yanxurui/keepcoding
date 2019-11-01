@@ -27,10 +27,72 @@ class Solution(object):
         return ans
 
 
+class Solution2(object):
+    def combine(self, n, k):
+        """
+        :type n: int
+        :type k: int
+        :rtype: List[List[int]]
+        """
+        rst = []
+        self.sub(rst, [], n, k, 1)
+        return rst
+
+    def sub(self, rst, tmp, n, k, i):
+        if len(tmp) == k:
+            rst.append(tmp)
+            return
+        if i > n:
+            return
+        self.sub(rst, tmp+[i], n, k, i+1)
+        self.sub(rst, list(tmp), n, k, i+1)
+
+
+
+# iteratively, very slow
+class Solution3(object):
+    def combine(self, n, k):
+        """
+        :type n: int
+        :type k: int
+        :rtype: List[List[int]]
+        """
+        rst = []
+        tmp = [[]]
+        for i in range(1, n+1):
+            l = len(tmp)
+            for j in range(l):
+                t = tmp[j]
+                s = t+[i]
+                if len(s) == k:
+                    rst.append(s)
+                else:
+                    tmp.append(s)
+        return rst
+
+
+# https://leetcode.com/problems/combinations/discuss/27024/1-liner-3-liner-4-liner
+# recursively
+class Solution4(object):
+    def combine(self, n, k):
+        """
+        :type n: int
+        :type k: int
+        :rtype: List[List[int]]
+        """
+        if k == 0:
+            return [[]]
+        rst = []
+        for i in range(k, n+1):
+            for r in self.combine(i-1, k-1):
+                r.append(i)
+                rst.append(r)
+        return rst
+
 
 if __name__ == '__main__':
     from testfunc import test
-
+    from common import unordered_equal
     test_data = [  
         (
             (4, 2),
@@ -44,4 +106,4 @@ if __name__ == '__main__':
             ]
         )
     ]
-    test(Solution().combine, test_data)
+    test(Solution4().combine, test_data, compare=unordered_equal)
