@@ -21,9 +21,10 @@ class Solution:
             rst.append('->'.join(map(str,path)))
         else:
             if root.left:
-                self.recursive(root.left, list(path), rst)
+                self.recursive(root.left, path, rst)
             if root.right:
-                self.recursive(root.right, list(path), rst)
+                self.recursive(root.right, path, rst)
+        path.pop()
 
 
 if __name__ == '__main__':

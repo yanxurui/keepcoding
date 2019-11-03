@@ -30,6 +30,10 @@ if __name__ == '__main__':
         (
             (52),
             "AZ"
-        )
+        ),
+        (
+            26**2,
+            "YZ"
+        ),
     ]
     test(Solution().convertToTitle, test_data)

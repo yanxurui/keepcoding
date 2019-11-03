@@ -1,47 +1,33 @@
+# https://leetcode.com/problems/search-in-rotated-sorted-array-ii/discuss/28218/My-8ms-C%2B%2B-solution-(o(logn)-on-average-o(n)-worst-case)
+
 class Solution(object):
-    def sub_search(self, nums, low, high, target):
-        med = (low + high)/2
-        m = nums[med]
-        if m == target:
-            return True
-        if med == low:
-            if nums[high] == target:
-                return True
-            else:
-                return False
-        if m > nums[low]:
-            if m < target:
-                return self.sub_search(nums, med, high, target)
-            else:
-                if nums[low] > target:
-                    return self.sub_search(nums, med, high, target)
-                else:
-                    return self.sub_search(nums, low, med, target)
-        elif m < nums[low]:
-            if m < target:
-                if nums[high] < target:
-                    return self.sub_search(nums, low, med, target)
-                else:
-                    return self.sub_search(nums, med, high, target)
-            else:
-                return self.sub_search(nums, low, med, target)
-        else:
-            while low < len(nums)-1 and low < high  and nums[low] == nums[low+1]:
-                low += 1
-            while high > 0 and low < high and nums[high] == nums[high-1]:
-                high -= 1
-            return self.sub_search(nums, low, high, target)
-
-
     def search(self, nums, target):
         """
         :type nums: List[int]
         :type target: int
         :rtype: bool
         """
-        if len(nums) == 0:
-            return False
-        return self.sub_search(nums, 0, len(nums)-1, target)
+        l, r = 0, len(nums)-1
+        while l <= r:
+            m = l + (r-l)//2
+            # m = (l + r)//2
+            med = nums[m]
+            if med == target:
+                return True
+            if med == nums[l] and med == nums[r]:
+                l += 1
+                r -= 1
+            elif med >= nums[l]:
+                if target >= nums[l] and target < med:
+                    r = m - 1
+                else:
+                    l = m + 1
+            else:
+                if target > med and target <= nums[r]:
+                    l = m + 1
+                else:
+                    r = m - 1
+        return False
 
 
 if __name__ == '__main__':
@@ -68,6 +54,13 @@ if __name__ == '__main__':
                 3
             ),
             True
-        )
+        ),
+        (
+            (
+                [1,3,1,1,1],
+                3
+            ),
+            True
+        ),
     ]
     test(Solution().search, test_data)

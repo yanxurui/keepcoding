@@ -42,7 +42,7 @@ class WordDictionary(object):
         c = word[0]
         if c == '.':
             for k,v in p.children.items():
-                if self.searchUtil(p.children[k], word[1:]):
+                if self.searchUtil(v, word[1:]):
                     return True
             return False
         else:

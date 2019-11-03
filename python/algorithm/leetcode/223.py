@@ -15,14 +15,14 @@ class Solution(object):
 
     def interset(self, a1,a2, b1,b2):
         # return the intersection of two line segment (a1, a2), (b1, b2)
-        if a1 >= b1 and a1 <= b2:
-            return min(a2, b2) - a1
-        if a2 >= b1 and a2 <= b2:
-            return a2 - max(a1, b1)
-        if a1 < b1 and a2 > b2:
-            return b2 - b1
-        return 0
-
+        # if a1 >= b1 and a1 <= b2:
+        #     return min(a2, b2) - a1
+        # if a2 >= b1 and a2 <= b2:
+        #     return a2 - max(a1, b1)
+        # if a1 < b1 and a2 > b2:
+        #     return b2 - b1
+        # return 0
+        return max(0, min(a2, b2) - max(a1, b1))
 
 if __name__ == '__main__':
     from testfunc import test

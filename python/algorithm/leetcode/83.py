@@ -59,6 +59,20 @@ class Solution(object):
             p.next = None
         return ans
 
+class Solution2(object):
+    def deleteDuplicates(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        p = head
+        while p:
+            if p.next and p.val == p.next.val:
+                p.next = p.next.next
+            else:
+                p = p.next
+        return head
+
 
 if __name__ == '__main__':
     from testfunc import test
@@ -79,7 +93,11 @@ if __name__ == '__main__':
         (
             ListNode.create([1,1]),
             ListNode.create([1])
-        )
+        ),
+        (
+            ListNode.create([1,1,1]),
+            ListNode.create([1])
+        ),
         
     ]
-    test(Solution().deleteDuplicates, test_data)
+    test(Solution2().deleteDuplicates, test_data)

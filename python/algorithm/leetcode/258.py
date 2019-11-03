@@ -1,7 +1,7 @@
 # https://leetcode.com/problems/add-digits/discuss/68580/Accepted-C%2B%2B-O(1)-time-O(1)-space-1-Line-Solution-with-Detail-Explanations
 
-# input: 1,2,3,4,5,6,7,8,9,10,11,12,13,14...
-# output:1,2,3,4,5,6,7,8,9. 1, 2, 3, 4, 5...
+# input: 1,2,3,4,5,6,7,8,9,10,11,12,13,14...18,20,...40,
+# output:1,2,3,4,5,6,7,8,9. 1, 2, 3, 4, 5... 9, 2,... 4,
 class Solution:
     def addDigits(self, num: int) -> int:
         return (num-1) % 9 + 1 if num else 0
