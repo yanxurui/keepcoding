@@ -1,8 +1,8 @@
 # Definition for singly-linked list.
-# class ListNode(object):
-#     def __init__(self, x):
-#         self.val = x
-#         self.next = None
+class ListNode(object):
+    def __init__(self, x):
+        self.val = x
+        self.next = None
 
 class Solution(object):
     def insertionSortList(self, head):
@@ -38,6 +38,25 @@ class Solution(object):
                     break
         return head
 
+class Solution2(object):
+    def insertionSortList(self, head):
+        rst = ListNode(0)
+        p = head
+        while p:
+            tmp = p.next
+            self.insert(rst, p)
+            p = tmp
+        return rst.next
+
+    def insert(self, root, x):
+        cur = root.next
+        prev = root
+        while cur and x.val > cur.val:
+            prev = cur
+            cur = cur.next
+        prev.next = x
+        x.next = cur
+
 
 if __name__ == '__main__':
     from testfunc import test
@@ -52,5 +71,5 @@ if __name__ == '__main__':
             ListNode.create([-1,0,3,4,5])
         ),
     ]
-    test(Solution().insertionSortList, test_data)
+    test(Solution2().insertionSortList, test_data)
 
