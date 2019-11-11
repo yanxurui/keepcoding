@@ -1,0 +1,70 @@
+#!/usr/bin/env python
+# coding=utf-8
+
+import sys
+import subprocess
+import pdb
+
+
+def parse(data_file):
+    state = 'start' # command, input, output
+    command, input_, output, no = [], [], [], 0
+    with open(data_file) as f:
+        for i, line in enumerate(f):
+            # pdb.set_trace()
+            if line.startswith('====='):
+                if state is 'output':
+                    yield (''.join(command))[:-1], str.encode(''.join(input_)), (''.join(output)).encode(), no+1
+                    command, input_, output = [], [], []
+                else:
+                    assert state is 'start'
+                state = 'command'
+                no = i
+            elif line.startswith('-----'):
+                if state is 'command':
+                    state = 'input'
+                else:
+                    assert state is 'input'
+                    state = 'output'
+            else:
+                if state is 'command':
+                    command.append(line)
+                elif state is 'input':
+                    input_.append(line)
+                else:
+                    assert state is 'output'
+                    output.append(line)
+
+def run(command, input_):
+    p = subprocess.Popen([command],
+        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        shell=True)
+    # p.stdin.write(input_)
+    # p.stdin.close()
+    stdout, stderr = p.communicate(input_)
+    return stdout + stderr # todo
+
+
+def main():
+    data = sys.argv[1]
+    only = list(map(int, sys.argv[2:]))
+    correct, failed = 0, 0
+    for command, input_, expected, no in parse(data):
+        if only and no not in only:
+            continue
+        output = run(command, input_)
+        if output == expected:
+            correct += 1
+        else:
+            print('%d:%s' % (no, command))
+            failed += 1
+            print("'%s'" % output)
+            print('-'*10)
+            print("'%s'" % expected)
+            print('='*20)
+    print('%d/%d failed' % (failed, correct+failed))
+
+if __name__ == '__main__':
+    main()
+
+
