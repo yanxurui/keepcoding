@@ -84,6 +84,13 @@ if __name__ == '__main__':
             ),
             True
         ),
+        (
+            (
+                "a",
+                "c*a"
+            ),
+            True
+        ),
     ]
     test(Solution().isMatch, test_data)
 

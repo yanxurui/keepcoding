@@ -9,8 +9,6 @@ class Solution:
         b, e = 0, 0
         paragraph = paragraph.lower()
         count = defaultdict(int)
-        import pdb
-        # pdb.set_trace()
         while True:
             while b < len(paragraph) and paragraph[b] not in letters:
                 b += 1

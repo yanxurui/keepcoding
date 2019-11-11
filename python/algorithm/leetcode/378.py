@@ -15,7 +15,7 @@ class Solution:
                     heapq.heappush(heap, (matrix[x][y], x, y))
         return v
 
-
+# https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/discuss/85173/Share-my-thoughts-and-Clean-Java-Code
 class Solution2:
     def kthSmallest(self, matrix: List[List[int]], k: int) -> int:
         m = len(matrix)

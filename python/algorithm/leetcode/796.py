@@ -18,7 +18,7 @@ if __name__ == '__main__':
                 'abcde',
                 'abced'
             ),
-            True
+            False
         ),
     ]
     test(Solution().rotateString, test_data)
