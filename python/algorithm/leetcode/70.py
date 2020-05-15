@@ -18,6 +18,15 @@ class Solution(object):
             self.table[n] = r
             return r
         
+class Solution2(object):
+    def climbStairs(self, n):
+        if n == 1:
+            return 1
+        a, b = 1, 1
+        for i in range(2, n+1):
+            a, b = b, a+b
+        return b
+
 
 if __name__ == '__main__':
     from testfunc import test
@@ -36,4 +45,4 @@ if __name__ == '__main__':
             14930352
         )
     ]
-    test(Solution().climbStairs, test_data)
+    test(Solution2().climbStairs, test_data)

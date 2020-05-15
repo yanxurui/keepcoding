@@ -32,6 +32,38 @@ class Solution(object):
         return self.recursive(s1, s2, s3, len(s1), len(s2), len(s3))
 
 
+# https://leetcode.com/problems/interleaving-string/discuss/31879/My-DP-solution-in-C%2B%2B
+class Solution2(object):
+    def isInterleave(self, s1, s2, s3):
+        """
+        :type s1: str
+        :type s2: str
+        :type s3: str
+        :rtype: bool
+        """
+        if len(s1) + len(s2) != len(s3):
+            return False
+        dp = [[False for j in range(len(s2)+1)] for i in range(len(s1)+1)]
+        # dp[i][j] is True represents s1[:i] and s2[:j] can wave to s3[:i+j]
+        # i, j means the length of s1 and s2 respectively
+        for i in range(len(s1)+1):
+            for j in range(len(s2)+1):
+                if i == 0 and j == 0:
+                    dp[i][j] = True
+                elif i == 0:
+                    if s2[j-1] == s3[i+j-1] and dp[i][j-1]:
+                        dp[i][j] = True
+                elif j == 0:
+                    if s1[i-1] == s3[i+j-1] and dp[i-1][j]:
+                        dp[i][j] = True
+                else:
+                    if s1[i-1] == s3[i+j-1] and dp[i-1][j]:
+                        dp[i][j] = True
+                    elif s2[j-1] == s3[i+j-1] and dp[i][j-1]:
+                        dp[i][j] = True
+        return dp[len(s1)][len(s2)]
+
+
 if __name__ == '__main__':
     from testfunc import test
 
@@ -52,7 +84,25 @@ if __name__ == '__main__':
                 "aadbbbaccc"
             ),
             False
-        )
+        ),
+        (
+            
+            (
+                "a",
+                "",
+                "c"
+            ),
+            False
+        ),
+        (
+            
+            (
+                "db",
+                "b",
+                "cbb",
+            ),
+            False
+        ),
     ]
-    test(Solution().isInterleave, test_data)
+    test(Solution2().isInterleave, test_data)
 

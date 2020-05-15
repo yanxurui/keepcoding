@@ -11,21 +11,19 @@ class Solution:
 
     def insert(self, nums, t):
         p = self.bs(nums, 0, len(nums)-1, t)
-        if p == -1:
-            p = len(nums)
         nums.insert(p, t)
         return p
 
-    def bs(self, nums, b, e, t):
-        # find the first one that is larger or equal than t
-        if b > e:
-            return -1
-        m = (b+e)//2
-        if nums[m] >= t:
-            tmp = self.bs(nums, b, m-1, t)
-            return tmp if tmp >= 0 else m
-        else:
-            return self.bs(nums, m+1, e, t)
+    def bs(self, nums, l, r, t):
+        # find the first one that is larger than or equal to t
+        while l <= r:
+            m = l + (r-l)//2
+            if nums[m] >= t:
+                r = m - 1
+            else:
+                l = m + 1
+        return l
+        
 
 
 if __name__ == '__main__':

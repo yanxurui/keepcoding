@@ -18,6 +18,21 @@ class Solution(object):
             j -= 1
         return len(chains) - 1
 
+
+class Solution2(object):
+    def jump(self, nums):
+        rst = 0
+        i = 0
+        reach = 0
+        destination = len(nums)-1
+        while reach < destination:
+            tmp = reach
+            reach = max([j+nums[j] for j in range(i, reach+1)])
+            i = tmp + 1
+            rst += 1
+        return rst
+
+
         
 if __name__ == '__main__':
     from testfunc import test
@@ -25,7 +40,15 @@ if __name__ == '__main__':
         (
             [2,3,1,1,4],
             2
-        )
+        ),
+        (
+            [2],
+            0
+        ),
+        (
+            [1,2,0,0],
+            2
+        ),
     ]
-    test(Solution().jump, test_data)
+    test(Solution2().jump, test_data)
 

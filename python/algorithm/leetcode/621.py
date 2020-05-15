@@ -8,13 +8,7 @@ class Solution:
         count = Counter(tasks)
         mk, f = self.maxValuOfDict(count)
         count_most_frequent = len(mk)
-        # v-1 slots
-        # at least n distinct tasks in a slot
-        # idles = empty - available
-        idles = (f-1) * (n-(count_most_frequent-1)) - (len(tasks) - count_most_frequent*f)
-        rst = len(tasks)
-        if idles >= 0:
-            rst += idles
+        rst = max(len(tasks), (f-1)*(n+1)+count_most_frequent)
         return rst
 
     def maxValuOfDict(self, d):

@@ -2,26 +2,14 @@ from typing import List
 
 class Solution:
     def longestCommonPrefix(self, strs: List[str]) -> str:
-        rst = []
-        k = 0
-        while True:
-            c = ''
-            for i, s in enumerate(strs):
-                if k >= len(s):
-                    c = ''
+        if len(strs) == 0:
+            return ''
+        for i in range(len(strs[0])):
+            c = strs[0][i]
+            for j in range(1, len(strs)):
+                if not (i < len(s) and c == strs[j][i]):
                     break
-                if i == 0:
-                    c = s[k]
-                else:
-                    if c != s[k]:
-                        c = ''
-                        break
-            if c:
-                rst.append(c)
-            else:
-                break
-            k += 1
-        return ''.join(rst)
+        return strs[0][:i]
 
 
 if __name__ == '__main__':

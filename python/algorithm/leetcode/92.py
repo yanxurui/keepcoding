@@ -1,5 +1,3 @@
-from linked_list import ListNode
-
 class Solution(object):
     def reverseBetween(self, head, m, n):
         """
@@ -20,6 +18,7 @@ class Solution(object):
             p = p.next
             if k2:
                 tmp.next = q
+            q = tmp
             if i == n:
                 k3 = tmp
                 k4 = p
@@ -29,14 +28,13 @@ class Solution(object):
                     head = k3
                 k2.next = k4
                 break
-            q = tmp
             i += 1
         return head
 
 
 if __name__ == '__main__':
     from testfunc import test
-
+    from common import ListNode
     test_data = [  
         (
             (

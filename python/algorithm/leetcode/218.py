@@ -43,6 +43,40 @@ class Solution(object):
         return res
 
 
+# https://leetcode.com/problems/the-skyline-problem/discuss/61261/10-line-Python-solution-104-ms
+
+import sys
+import heapq
+INT_MAX = sys.maxsize
+class Solution2(object):
+    def getSkyline(self, buildings):
+        """
+        :type buildings: List[List[int]]
+        :rtype: List[List[int]]
+        """
+        rst = []
+        events = []
+        for l,r,h in buildings:
+            events.append((l, -h, r)) # rise
+            events.append((r, 0, 0)) # drop
+        events.sort()
+        heap = [(0,INT_MAX)]
+        cur = 0
+        for x, h, r in events:
+            if h < 0:
+                heapq.heappush(heap, (h, r))
+            else:
+                # remove buildings that have ended
+                # find the highest building that is valid
+                while x >= heap[0][1]:
+                    heapq.heappop(heap)
+            if -heap[0][0] != cur:
+                cur = -heap[0][0]
+                rst.append([x, cur])
+        return rst
+
+
+
 if __name__ == '__main__':
     from testfunc import test
     from common import unordered_equal
@@ -68,4 +102,4 @@ if __name__ == '__main__':
             [[2,70],[4,30],[6,41],[7,70],[10,102],[30,41],[60,91],[80,72],[90,59],[120,0]]
         )
     ]
-    test(Solution().getSkyline, test_data)
+    test(Solution2().getSkyline, test_data)
