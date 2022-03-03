@@ -186,8 +186,11 @@ def main():
     # url = 'http://www.qjdj.gov.cn/news/c/tzgg286/list_1.htm'
     # pattern = '.main .content .right_list .list-content ul'
     # Update on 2021.10.19
-    url = 'http://www.ynzx.gov.cn/tzgg/index.jhtml'
-    pattern = '.zx-news-list'
+    # url = 'http://www.ynzx.gov.cn/tzgg/index.jhtml'
+    # pattern = '.zx-news-list'
+    # Update on 2021.12.27
+    url = 'http://www.qjdj.gov.cn/tzgg_list.aspx'
+    pattern = '.noticeList_wrap>ul>li>div.notice_r>p.title '
     monitor = NewsMonitor(url, pattern)
     while True:
         try:
