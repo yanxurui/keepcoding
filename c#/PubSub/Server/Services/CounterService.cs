@@ -39,19 +39,19 @@ public class CounterService : Counter.CounterBase
 
     public override async Task Subscribe(Empty request, IServerStreamWriter<PublishReply> responseStream, ServerCallContext context)
     {
-        // create an AutoResetEvent to signal the end of the stream
-        var are = new AutoResetEvent(true);
+        // Use SemaphoreSlim instead of AutoResetEvent because it supports async wait
+        SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
         // IMPORTANT: add the event before publishing the first message to avoid missing any update
         // between the time the first message is published and the event is added to the queue
-        messageCenter.Queue.Enqueue(are);
+        messageCenter.Queue.Enqueue(semaphore);
 
         bool isFirst = true;
 
         while (true)
         {
             // wait here
-            are.WaitOne();
+            await semaphore.WaitAsync();
 
             _logger.LogDebug("Publishing message to client");
             try
@@ -71,7 +71,7 @@ public class CounterService : Counter.CounterBase
                 // listen again for the next event
                 // Todo: there could be a chance that a subscriber was after this one might be inserted before this one
                 // The result is the the other subscriber will get duplicate updates
-                messageCenter.Queue.Enqueue(are);
+                messageCenter.Queue.Enqueue(semaphore);
             }
             catch (Exception ex)
             {

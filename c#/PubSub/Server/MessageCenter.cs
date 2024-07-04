@@ -24,7 +24,7 @@ namespace Server;
 public class MessageCenter
 {
     // create a queue to store all subscribers. Each event is corresponding to a subscriber
-    public ConcurrentQueue<AutoResetEvent> Queue { get; } = new();
+    public ConcurrentQueue<SemaphoreSlim> Queue { get; } = new();
 
     public string Msg { get; set; }
 }

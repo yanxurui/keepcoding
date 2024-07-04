@@ -39,7 +39,7 @@ public class MyBackgroundService : BackgroundService
                 if (messageCenter.Queue.TryDequeue(out var e))
                 {
                     // signal the event to wake up the corresponding listener
-                    e.Set();
+                    e.Release();
                 }
                 else
                 {
