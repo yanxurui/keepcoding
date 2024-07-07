@@ -10,3 +10,7 @@
 # Python byte code
 *.pyc
 
+# c#
+obj/
+bin/
+.vs/
