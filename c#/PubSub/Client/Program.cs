@@ -74,7 +74,9 @@ static async Task ServerStreamingCallExample(GrpcChannel channel, int i, int del
                 Console.WriteLine($"{i}: Connected and received the first message after {sw.ElapsedMilliseconds} ms");
             }
 
-            Console.WriteLine($"{i}: {message.Msg}");
+            var ts = message.Ts.ToDateTime();
+            var delay = DateTime.UtcNow - ts;
+            Console.WriteLine($"{i}: {message.Msg}, delayed {delay.TotalMilliseconds}");
         }
     }
     catch (RpcException ex)

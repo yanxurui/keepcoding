@@ -25,26 +25,6 @@ public class MyBackgroundService : BackgroundService
         {
             await Task.Delay(3000, stoppingToken);
 
-            /****************Threads stats*********************/
-            int workerThreads, completionPortThreads;
-            ThreadPool.GetMinThreads(out workerThreads, out completionPortThreads);
-            _logger.LogInformation($"Min worker threads: {workerThreads}, I/O threads: {completionPortThreads}");
-            ThreadPool.GetMaxThreads(out workerThreads, out completionPortThreads);
-            _logger.LogInformation($"Max worker threads: {workerThreads}, I/O threads: {completionPortThreads}");
-
-            int availableWorker, availableAsyncIO;
-            ThreadPool.GetAvailableThreads(out availableWorker, out availableAsyncIO);
-
-            int maxWorkerThreads, maxCompletionPortThreads;
-            ThreadPool.GetMaxThreads(out maxWorkerThreads, out maxCompletionPortThreads);
-
-            int busyWorkerThreads = maxWorkerThreads - availableWorker;
-            int busyAsyncIOThreads = maxCompletionPortThreads - availableAsyncIO;
-
-            _logger.LogInformation("Worker Threads: " + busyWorkerThreads);
-            _logger.LogInformation("Async I/O Threads: " + busyAsyncIOThreads);
-            /*************************************/
-
             int count = messageCenter.Queue.Count;
             _logger.LogInformation($"MyBackgroundService is running. There are {count} subscribers.");
             messageCenter.Msg = $"The current time is: {DateTime.Now}";
@@ -70,6 +50,26 @@ public class MyBackgroundService : BackgroundService
 
             sw.Stop();
             _logger.LogInformation($"Time elapsed: {sw.ElapsedMilliseconds} ms");
+
+
+            /****************Threads stats*********************/
+            //int workerThreads, completionPortThreads;
+            //ThreadPool.GetMinThreads(out workerThreads, out completionPortThreads);
+            //_logger.LogInformation($"Min worker threads: {workerThreads}, I/O threads: {completionPortThreads}");
+            //ThreadPool.GetMaxThreads(out workerThreads, out completionPortThreads);
+            //_logger.LogInformation($"Max worker threads: {workerThreads}, I/O threads: {completionPortThreads}");
+
+            int availableWorker, availableAsyncIO;
+            ThreadPool.GetAvailableThreads(out availableWorker, out availableAsyncIO);
+
+            int maxWorkerThreads, maxCompletionPortThreads;
+            ThreadPool.GetMaxThreads(out maxWorkerThreads, out maxCompletionPortThreads);
+
+            int busyWorkerThreads = maxWorkerThreads - availableWorker;
+            int busyAsyncIOThreads = maxCompletionPortThreads - availableAsyncIO;
+            _logger.LogInformation($"Worker Threads: {busyWorkerThreads}, I/O threads: {busyAsyncIOThreads}");
+            _logger.LogInformation($"ThreadCount: {ThreadPool.ThreadCount}, PendingWorkItemCount: {ThreadPool.PendingWorkItemCount}, CompletedWorkItemCount: {ThreadPool.CompletedWorkItemCount}");
+            /*************************************/
         }
     }
 }

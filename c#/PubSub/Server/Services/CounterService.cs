@@ -58,7 +58,8 @@ public class CounterService : Counter.CounterBase
             {
                 await responseStream.WriteAsync(new PublishReply
                 {
-                    Msg = messageCenter.Msg
+                    Msg = messageCenter.Msg,
+                    Ts = Timestamp.FromDateTime(DateTime.UtcNow)
                 });
 
                 if (isFirst)

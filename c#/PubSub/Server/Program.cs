@@ -30,8 +30,8 @@ using Microsoft.Extensions.DependencyInjection;
 //   Min worker threads: 12, I/O threads: 1
 //   Max worker threads: 32767, I/O threads: 1000
 int processorCount = Environment.ProcessorCount;
-int minWorkerThreads = processorCount * 2; // Adjust as needed  
-int minCompletionPortThreads = processorCount * 2; // Adjust as needed  
+int minWorkerThreads = 20; // Adjust as needed  
+int minCompletionPortThreads = 10; // Adjust as needed  
 ThreadPool.SetMinThreads(minWorkerThreads, minCompletionPortThreads);
 
 var builder = WebApplication.CreateBuilder(args);
