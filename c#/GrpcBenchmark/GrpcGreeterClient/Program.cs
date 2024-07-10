@@ -263,7 +263,7 @@ public class Options
     [Option('T', "thread", Default = 5, HelpText = "Count of threads")]
     public int Threads { get; set; }
 
-    [Option('C', "connection", Default = 400, HelpText = "Concurrent connections per thread.")]
+    [Option('C', "connection", Default = 80, HelpText = "Concurrent connections per thread.")]
     public int Connections { get; set; }
 
     [Option('S', "streaming", Required = false, Default = false, HelpText = "whether to call the streaming rpc.")]
