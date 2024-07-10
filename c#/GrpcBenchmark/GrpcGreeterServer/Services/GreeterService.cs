@@ -1,7 +1,7 @@
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using GrpcGreeter;
+using Greet;
 using System.Diagnostics;
 
 namespace GrpcGreeter.Services;

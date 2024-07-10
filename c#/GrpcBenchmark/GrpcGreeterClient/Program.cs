@@ -3,7 +3,7 @@ using CommandLine;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Grpc.Net.Client;
-using GrpcGreeterClient;
+using Greet;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO.Pipes;

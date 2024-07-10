@@ -9,7 +9,7 @@
 	<PackageTags>d00c1941-7bfa-4911-80cd-26e6bddeaa99</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
+    <Protobuf Include="..\Protos\greet.proto" GrpcServices="Server" Link="Protos\greet.proto" />
   </ItemGroup>
 
   <ItemGroup>
