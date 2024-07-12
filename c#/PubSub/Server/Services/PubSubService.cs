@@ -26,15 +26,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Server.Services;
 
-public class CounterService : Counter.CounterBase
+public class PubSubService : PubSub.PubSubBase
 {
     private readonly ILogger _logger;
     private readonly MessageCenter messageCenter;
 
-    public CounterService(MessageCenter queue, ILoggerFactory loggerFactory)
+    public PubSubService(MessageCenter queue, ILoggerFactory loggerFactory)
     {
         messageCenter = queue;
-        _logger = loggerFactory.CreateLogger<CounterService>();
+        _logger = loggerFactory.CreateLogger<PubSubService>();
     }
 
     public override async Task Subscribe(Empty request, IServerStreamWriter<PublishReply> responseStream, ServerCallContext context)

@@ -19,27 +19,10 @@ import "google/protobuf/timestamp.proto";
 
 package count;
 
-// The counter service definition.
-service Counter {
-  // Increment count by 1
-  rpc IncrementCount (google.protobuf.Empty) returns (CounterReply);
-  // Increment count through client stream of multiple counts
-  rpc AccumulateCount (stream CounterRequest) returns (CounterReply);
-  // Countdown with server stream
-  rpc Countdown (google.protobuf.Empty) returns (stream CounterReply);
-
+// The pubsub service definition.
+service PubSub {
   // server push
   rpc Subscribe (google.protobuf.Empty) returns (stream PublishReply);
-}
-
-// The request message containing the count to increment by
-message CounterRequest {
-  int32 count = 1;
-}
-
-// The response message containing the current count
-message CounterReply {
-  int32 count = 1;
 }
 
 // The response message containing the current count

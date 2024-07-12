@@ -50,6 +50,6 @@ builder.Services.AddSingleton<MessageCenter>();
 builder.Services.AddHostedService<MyBackgroundService>();
 
 var app = builder.Build();
-app.MapGrpcService<CounterService>();
+app.MapGrpcService<PubSubService>();
 
 app.Run();

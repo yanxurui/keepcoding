@@ -61,7 +61,7 @@ static async Task ServerStreamingCallExample(GrpcChannel channel, int i, int del
     Stopwatch sw = new();
     sw.Start();
     bool fired = false;
-    var client = new Counter.CounterClient(channel);
+    var client = new PubSub.PubSubClient(channel);
     using var call = client.Subscribe(new Empty());
     try
     {
