@@ -10,6 +10,7 @@ using System.IO.Pipes;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Principal;
+using ShellProgressBar;
 
 
 await Main(args);
@@ -77,7 +78,30 @@ async Task<Result> Run(Options o)
         tasks.Add(Task.Run(() => RunThread(o, result)));
     }
 
-    await Task.WhenAll(tasks);
+    var waitingTask = Task.WhenAll(tasks);
+
+    var totalTicks = o.Duration;
+    var options = new ProgressBarOptions
+    {
+        ProgressCharacter = '─',
+    };
+    using (var pbar = new ProgressBar(totalTicks, "benchmark...", options))
+    {
+        int lastCount = 0;
+        int currentCount;
+        while (false == waitingTask.IsCompleted)
+        {
+            // wait for 1 second
+            await Task.Delay(1000);
+            // will advance pbar to 1 out of totalTicks.
+            // also advance and update the progressbar text
+            currentCount = result.Latencies.Count;
+            pbar.Tick($"QPS: {currentCount-lastCount} reqs/sec");
+            lastCount = currentCount;
+        }
+    }
+
+    // await Task.WhenAll(tasks);
 
     // Print stats
     Console.WriteLine("{0} requests in {1}s, {2:F2}GB read", result.RequestCount, result.Duration, 1.0 * result.ResponseSize / (1 << 30));
