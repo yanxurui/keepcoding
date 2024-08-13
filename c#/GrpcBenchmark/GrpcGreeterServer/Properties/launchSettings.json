@@ -10,7 +10,6 @@
     },
     "https": {
       "commandName": "Project",
-      "commandLineArgs": "httpsys",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

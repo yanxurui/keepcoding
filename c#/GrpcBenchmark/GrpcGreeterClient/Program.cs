@@ -74,7 +74,7 @@ async Task<Result> Run(Options o)
 
     for (int i = 0; i < o.Threads; i++)
     {
-        // Use Task.Run) to run the task in a seperate thread
+        // Use Task.Run to run the task in a seperate thread
         tasks.Add(Task.Run(() => RunThread(o, result)));
     }
 
@@ -96,7 +96,7 @@ async Task<Result> Run(Options o)
             // will advance pbar to 1 out of totalTicks.
             // also advance and update the progressbar text
             currentCount = result.Latencies.Count;
-            pbar.Tick($"QPS: {currentCount-lastCount} reqs/sec");
+            pbar.Tick($"Payload: {o.Size}, QPS: {currentCount-lastCount} reqs/sec");
             lastCount = currentCount;
         }
     }
@@ -169,7 +169,6 @@ async Task<DownloadReply> DoRequest(Greeter.GreeterClient client, DownloadReques
 
 async Task<DownloadReply> DoRequestStream(Greeter.GreeterClient client, AsyncDuplexStreamingCall<DownloadRequest, DownloadReply> stream, DownloadRequest downloadRequest)
 {
-    // stream = client.DownloadStream();
     await stream.RequestStream.WriteAsync(downloadRequest);
     await stream.RequestStream.CompleteAsync();
 

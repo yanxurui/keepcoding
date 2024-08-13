@@ -7,9 +7,54 @@ using Greet;
 using System.Threading.Channels;
 
 // The port number must match the port of the gRPC server.
-using var channel = GrpcChannel.ForAddress("https://localhost:5001");
-var client = new Greeter.GreeterClient(channel);
+var url = "https://localhost:5001";
+//using var channel = GrpcChannel.ForAddress(url);
+//var client = new Greeter.GreeterClient(channel);
 DownloadRequest downloadRequest = new DownloadRequest { RequestSize = 10 };
+
+// TestTimeout();
+
+SocketsHttpHandler socketsHttpHandler = new() { EnableMultipleHttp2Connections = true };
+
+GrpcChannelOptions channelOptions = new()
+{
+    DisposeHttpClient = true
+};
+
+channelOptions.HttpClient = new HttpClient(socketsHttpHandler);
+
+using var channel = GrpcChannel.ForAddress(url, channelOptions);
+var client = new Greeter.GreeterClient(channel);
+
+var stream = client.DownloadStream();
+
+foreach (var i in Enumerable.Range(0, 2))
+{
+
+    await stream.RequestStream.WriteAsync(downloadRequest);
+
+    await stream.ResponseStream.MoveNext();
+}
+
+await stream.RequestStream.CompleteAsync();
+
+
+void TestTimeout()
+{
+    SocketsHttpHandler socketsHttpHandler = new() { EnableMultipleHttp2Connections = true };
+
+    GrpcChannelOptions channelOptions = new()
+    {
+        DisposeHttpClient = true
+    };
+
+    channelOptions.HttpClient = new HttpClient(socketsHttpHandler);
+
+    var channel = GrpcChannel.ForAddress(url, channelOptions);
+    var client = new Greeter.GreeterClient(channel);
+    client.Sleep(new SleepRequest { Seconds = 105 });
+    Console.WriteLine("Done");
+}
 
 /// <summary>
 /// Test blocking operations in the server side will create new threads
@@ -94,4 +139,27 @@ async Task PrintThread()
 {
     int threadId = Thread.CurrentThread.ManagedThreadId;
     Console.WriteLine($"Thread id: {threadId}");
+}
+
+async Task TestIsCompleted()
+{
+    // create an array of 3 tasks with each of them waiting for 1, 2, 3 seconds
+    Task[] tasks = new Task[3];
+    for (int i = 0; i < 3; i++)
+    {
+        int seconds = i + 1;
+        tasks[i] = Task.Run(async () =>
+        {
+            await Task.Delay(seconds * 1000);
+        });
+    }
+
+    Task waitingTask = Task.WhenAll(tasks);
+
+    // check if the task is completed every 1 second
+    while (!waitingTask.IsCompleted)
+    {
+        Console.WriteLine("still running");
+        await Task.Delay(1000);
+    }
 }
