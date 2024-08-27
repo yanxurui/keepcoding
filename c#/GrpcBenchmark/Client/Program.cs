@@ -122,7 +122,14 @@ async Task RunThread(Options o, Result result)
     var client = new Greeter.GreeterClient(channel);
     for (int i = 0; i < o.Connections; i++)
     {
-        tasks.Add(RunConnection(client, o, result));
+        if (o.Streaming)
+        {
+            tasks.Add(RunConnectionStreaming(client, o, result));
+        }
+        else
+        {
+            tasks.Add(RunConnection(client, o, result));
+        }
     }
 
     await Task.WhenAll(tasks);
@@ -134,7 +141,9 @@ async Task RunConnection(Greeter.GreeterClient client, Options o, Result result)
     double t;
     DownloadRequest downloadRequest = new DownloadRequest { RequestSize = (uint)o.Size };
     DownloadReply reply;
+
     var sw = Stopwatch.StartNew();
+
     while (sw.Elapsed.TotalSeconds < o.Duration)
     {
         t = sw.Elapsed.TotalMilliseconds;
@@ -145,16 +154,7 @@ async Task RunConnection(Greeter.GreeterClient client, Options o, Result result)
         // var channel = CreateChannel(o.Url);
         // client = new Greeter.GreeterClient(channel);
 
-        if (o.Streaming)
-        {
-            // the using ensures it's always disposed if an unexpected error occurs.
-            using var stream = client.DownloadStream();
-            reply = await DoRequestStream(client, stream, downloadRequest);
-        }
-        else
-        {
-            reply = await DoRequest(client, downloadRequest);
-        }
+        reply = await client.DownloadAsync(downloadRequest);
 
         // await channel.ShutdownAsync();
 
@@ -162,19 +162,37 @@ async Task RunConnection(Greeter.GreeterClient client, Options o, Result result)
     }
 }
 
-async Task<DownloadReply> DoRequest(Greeter.GreeterClient client, DownloadRequest downloadRequest)
+async Task RunConnectionStreaming(Greeter.GreeterClient client, Options o, Result result)
 {
-    return await client.DownloadAsync(downloadRequest);
-}
+    double t;
+    DownloadRequest downloadRequest = new DownloadRequest { RequestSize = (uint)o.Size };
+    using var stream = client.DownloadStream();
+    DownloadReply reply;
 
-async Task<DownloadReply> DoRequestStream(Greeter.GreeterClient client, AsyncDuplexStreamingCall<DownloadRequest, DownloadReply> stream, DownloadRequest downloadRequest)
-{
-    await stream.RequestStream.WriteAsync(downloadRequest);
+    var sw = Stopwatch.StartNew();
+
+    while (sw.Elapsed.TotalSeconds < o.Duration)
+    {
+        t = sw.Elapsed.TotalMilliseconds;
+
+        await stream.RequestStream.WriteAsync(downloadRequest);
+
+        // Receive the response  
+        if (await stream.ResponseStream.MoveNext(CancellationToken.None))
+        {
+            reply = stream.ResponseStream.Current;
+            result.Add(sw.Elapsed.TotalMilliseconds - t, reply.Body.Length);
+        }
+    }
+
     await stream.RequestStream.CompleteAsync();
 
-    await stream.ResponseStream.MoveNext();
-
-    return stream.ResponseStream.Current;
+    // Receive remaining responses from the server  
+    while (await stream.ResponseStream.MoveNext(CancellationToken.None))
+    {
+        reply = stream.ResponseStream.Current;
+        throw new Exception("Unexpected response from server");
+    }
 }
 
 GrpcChannel CreateChannel(string address)
@@ -235,6 +253,11 @@ public class Result
     {
         get
         {
+            if (Latencies.Count == 0)
+            {
+                return 0;
+            }
+
             return Latencies.Average();
         }
     }
@@ -274,7 +297,7 @@ public class Result
 
 public class Options
 {
-    [Option('U', "url", Required = false, Default = "https://localhost:5000", HelpText = "Url to do load test against")]
+    [Option('U', "url", Required = false, Default = "https://localhost:5001", HelpText = "Url to do load test against")]
     public string Url { get; set; }
 
     [Option('R', "run", Default = 3, HelpText = "Number of runs")]

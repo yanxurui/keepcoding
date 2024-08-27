@@ -59,11 +59,6 @@ public class GreeterService : Greeter.GreeterBase
                 byteString = responseMap[1000];
             }
 
-            /***********Remove this for benchmark*************/
-            //int threadId = Thread.CurrentThread.ManagedThreadId;
-            //_logger.LogInformation($"Thread id: {threadId}");
-            /***********Remove this for benchmark*************/
-
             await responseStream.WriteAsync(new DownloadReply
             {
                 Body = byteString
