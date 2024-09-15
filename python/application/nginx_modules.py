@@ -1,18 +1,18 @@
-from pprint import pprint
+import re
 import traceback
+from pprint import pprint
+
+from gevent import monkey
+monkey.patch_all()
 
 import requests
-import re
-
-import gevent
 from gevent.pool import Pool
-from gevent import monkey
 
-monkey.patch_all()
 
 def get(repo):
     print(repo)
-    r = requests.get('https://api.github.com/repos/%s?access_token=4a5f58347e8fcbf77ab50c515c2e61c1f0e9b8bc' % repo)
+    headers = { "Authorization": "xxxxxxxxx" }
+    r = requests.get('https://api.github.com/repos/%s' % repo, headers=headers)
     if r.status_code != 200:
         print('bad status code %s:%d' % (repo, r.status_code))
         return repo, 0
@@ -27,16 +27,21 @@ def get(repo):
     return repo, star
 
 def main():
-    r=requests.get('https://www.nginx.com/resources/wiki/modules/')
+    # r=requests.get('https://www.nginx.com/resources/wiki/modules/')
+    r=requests.get('https://github.com/rust-unofficial/awesome-rust')
     body = r.text
     repos = map(lambda x: x.rstrip('/'), re.findall('https://github.com/(.*?)"', body))
+    # filter those ends with \ and have more than 1 /
+    repos = filter(lambda x: not x.endswith('\\') and x.count('/') == 1, repos)
+    repos = list(set(repos)) # dedup
+    print("found {} repos", len(repos))
     pool = Pool(10)
     repo_star = {}
     for repo, star in pool.imap_unordered(get, repos):
         repo_star[repo] = star
     repo_star = sorted(repo_star.items(), key=lambda x: x[1])
     for repo, star in repo_star:
-        print('%s : %d' % (repo, star))
+        print('%s: %d' % (repo, star))
 
 if __name__ == '__main__':
     main()

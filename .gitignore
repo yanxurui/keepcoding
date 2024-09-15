@@ -18,3 +18,7 @@ out.txt
 
 # temporary files
 tmp*
+# c#
+obj/
+bin/
+.vs/
