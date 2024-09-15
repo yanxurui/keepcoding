@@ -16,12 +16,14 @@ class Solution:
         # a: distance from entry to meet point
         # 2s = s + nc => s = nc
         # s = x + a + mc
-        # x = (n-m-1)*c + c -a
+        # x = (n-m-1)*c + c - a
+        # that is, new finally will meet slow at the entry point
         new = 0
         while new != slow:
             new = nums[new]
             slow = nums[slow]
         return slow
+
 
 def swap(nums, i, j):
     if nums[i] == nums[j]:
@@ -30,7 +32,6 @@ def swap(nums, i, j):
     nums[i] = nums[j]
     nums[j] = tmp
     return True
-
 
 class Solution2:
     def findDuplicate(self, nums: List[int]) -> int:

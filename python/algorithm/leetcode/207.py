@@ -38,6 +38,43 @@ class Solution(object):
         return False
 
 
+from collections import defaultdict
+
+class Solution2(object):
+    def canFinish(self, numCourses, prerequisites):
+        """
+        :type numCourses: int
+        :type prerequisites: List[List[int]]
+        :rtype: bool
+        """
+        edges = defaultdict(list)
+        for v1, v2 in prerequisites:
+            edges[v1].append(v2)
+        visited = defaultdict(int)
+        for i in range(numCourses):
+            if self.hasCircleDfs(i, edges, visited):
+                return False
+        return True
+
+    def hasCircleDfs(self, i, edges, visited):
+        '''
+        return True if circle is detected
+        '''
+        if visited[i] == 1:
+            # being visited means a circle is detected
+            return True
+        elif visited[i] == 2:
+            # was visited, no circle in all paths that contains i
+            return False
+        else:
+            visited[i] = 1
+            for j in edges[i]:
+                if self.hasCircleDfs(j, edges, visited):
+                    return True
+            visited[i] = 2
+            return False
+
+
 if __name__ == '__main__':
     from testfunc import test
     from common import ListNode
@@ -64,4 +101,4 @@ if __name__ == '__main__':
             False
         )
     ]
-    test(Solution().canFinish, test_data)
+    test(Solution2().canFinish, test_data)

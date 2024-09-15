@@ -1,5 +1,14 @@
 # https://leetcode.com/problems/find-k-pairs-with-smallest-sums/discuss/84551/simple-Java-O(KlogK)-solution-with-explanation
 
+# think of it as a merge K-sorted list
+# for the below input:
+#     [1,7,11],
+#     [2,4,6]
+# we have 3 sorted list
+# (1, 2) -> (1, 4) -> (1, 6)
+# (7, 2) -> (7, 4) -> (7, 6)
+# (11,2) -> (11,4) -> (11,6)
+
 from typing import List
 import heapq
 class Solution:

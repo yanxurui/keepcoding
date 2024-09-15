@@ -16,29 +16,6 @@ class Solution(object):
         if s in self.d:
             return self.d[s]
         res = []
-        for i in range(n):
-            if s[i:] in wordDict:
-                if i > 0:
-                    tmp = self.wordBreak(s[:i], wordDict)
-                    for t in tmp:
-                        res.append(t + ' ' + s[i:])
-                else:
-                    res.append(s[i:])
-        self.d[s] = res
-        return res
-
-    def wordBreak2(self, s, wordDict):
-        """
-        :type s: str
-        :type wordDict: List[str]
-        :rtype: bool
-        """
-        n = len(s)
-        if n == 0:
-            return []
-        if s in self.d:
-            return self.d[s]
-        res = []
         for i in range(1, n+1):
             if s[:i] in wordDict:
                 if i < n:
@@ -91,4 +68,4 @@ if __name__ == '__main__':
             []
         )
     ]
-    test(Solution().wordBreak2, test_data, compare=unordered_equal)
+    test(Solution().wordBreak, test_data, compare=unordered_equal)

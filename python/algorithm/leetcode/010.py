@@ -15,11 +15,12 @@ class Solution:
                 elif p[j] == '*':
                     if j >= 1:
                         if p[j-1] == s[i] or p[j-1] == '.':
-                            # match >1, 1, 0
+                            # a* or .* match >1, 1, 0 chars
                             dp[i+1][j+1] = dp[i][j+1] or \
                                            dp[i][j-1] or \
                                            dp[i+1][j-1]
                         else:
+                            # a* or .* match empty
                             dp[i+1][j+1] = dp[i+1][j-1]
         return dp[len(s)][len(p)]
 

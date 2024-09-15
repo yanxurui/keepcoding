@@ -15,7 +15,7 @@ class Solution(object):
             elif nums[m] > nums[h]:
                 l = m + 1
             else:
-                h -= 1
+                h -= 1 # important
         return nums[l]
 
         

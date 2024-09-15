@@ -4,8 +4,6 @@ class Solution:
     def majorityElement(self, nums):
         m1, c1 = 0, 0
         m2, c2 = 1, 0
-        import pdb
-        # pdb.set_trace()
         for n in nums:
             if n == m1:
                 c1 += 1

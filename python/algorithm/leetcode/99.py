@@ -30,8 +30,7 @@ class Solution(object):
         if root.val < self.prev.val:
             if self.first is None:
                 self.first = self.prev
-            if self.first is not None:
-                self.second = root
+            self.second = root
 
         self.prev = root
         self.in_order(root.right)

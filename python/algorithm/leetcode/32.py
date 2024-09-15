@@ -6,21 +6,18 @@ class Solution(object):
         """
         stack = []
         for i,c in enumerate(s):
-            if len(stack) == 0:
-                stack.append(i)
+            if c == ')' and stack and s[stack[-1]]=='(':
+                stack.pop()
             else:
-                if s[stack[-1]]=='(' and c == ')':
-                    stack.pop()
-                else:
-                    stack.append(i)
+                stack.append(i)
         stack.insert(0, -1)
         stack.append(len(s))
         longest = 0
-        for j in range(1,len(stack)):
+        for j in range(1, len(stack)):
             l = stack[j] - stack[j-1]
             if l > longest:
                 longest = l
-        return longest-1
+        return longest - 1
 
 
 if __name__ == '__main__':

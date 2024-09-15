@@ -8,14 +8,13 @@ class Solution(object):
             return len(nums)
         k = 1
         for i in range(2, len(nums)):
-            if nums[i] == nums[k]:
-                if nums[i] == nums[k-1]:
-                    continue
+            if nums[i] == nums[k] and nums[i] == nums[k-1]:
+                continue
             k += 1
             nums[k] = nums[i]
 
         return k+1
-        
+
 
 if __name__ == '__main__':
     from testfunc import test

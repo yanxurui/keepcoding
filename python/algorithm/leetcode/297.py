@@ -43,7 +43,7 @@ class Codec:
                 if not q:
                     root = node
                 else:
-                    parent = q.pop(0)
+                    parent = q.pop(0) # important
                     parent.left = node
             else:
                 parent.right = node

@@ -4,7 +4,7 @@ class Solution(object):
             return True
         m = len(board)
         n = len(board[0])
-        if x >=0 and x < m and y >=0 and y < n:
+        if x >= 0 and x < m and y >= 0 and y < n:
             if mask[x][y] == 0 and board[x][y] == word[k]:
                 mask[x][y] = 1
                 found = self.recursive(mask, board, word, k+1, x-1, y) \

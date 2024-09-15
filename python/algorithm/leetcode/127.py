@@ -9,12 +9,11 @@ class Solution(object):
         :rtype: int
         """
         wordList = set(wordList)
-        layer = {}
-        layer[beginWord] = [[beginWord]]
+        layer = set([beginWord])
         # BFS layer by layer
         n = 1
         while layer:
-            newlayer = defaultdict(list)
+            newlayer = set()
             for w in layer:
                 if w == endWord:
                     return n
@@ -23,8 +22,8 @@ class Solution(object):
                         for c in 'abcdefghijklmnopqrstuvwxyz':
                             neww = w[:i]+c+w[i+1:]
                             if neww in wordList:
-                                newlayer[neww] += [l+[neww] for l in layer[w]]
-            wordList -= set(newlayer.keys())
+                                newlayer.add(neww)
+            wordList -= newlayer
             layer = newlayer
             n += 1
         return 0

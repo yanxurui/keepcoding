@@ -36,6 +36,27 @@ class Solution2(object):
         self.dfs(nums, 0, ans)
         return ans
 
+class Solution3(object):
+    def backtrack(self, nums, tmp, visited, ans):
+        if len(tmp) == len(nums):
+            ans.append(tmp)
+        else:
+            for i,n in enumerate(nums):
+                if visited[i]:
+                    continue
+                visited[i] = True
+                self.backtrack(nums, tmp+[n], visited, ans)
+                visited[i] = False
+
+    def permute(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
+        ans = []
+        visited = [False] * len(nums)
+        self.backtrack(nums, [], visited, ans)
+        return ans
 
 if __name__ == '__main__':
     from testfunc import test
@@ -53,5 +74,5 @@ if __name__ == '__main__':
             ]
         )
     ]
-    test(Solution2().permute, test_data, compare=unordered_equal)
+    test(Solution3().permute, test_data, compare=unordered_equal)
 

@@ -22,6 +22,28 @@ class Solution:
         self.util(root.right)
 
 
+class Solution2:
+    def kthSmallest(self, root, k: int) -> int:
+        i = 0
+        stack = []
+        p = root
+        while True:
+            # push left: if p has left, put in stack
+            while p:
+                stack.append(p)
+                p = p.left
+            # process p
+            if stack:
+                p = stack.pop()
+                i += 1
+                if i == k:
+                    return p.val
+                p = p.right
+            else:
+                break
+        return None
+
+
 if __name__ == '__main__':
     from testfunc import test
     from common import TreeNode
@@ -55,4 +77,4 @@ if __name__ == '__main__':
             0
         )
     ]
-    test(Solution().kthSmallest, test_data)
+    test(Solution2().kthSmallest, test_data)

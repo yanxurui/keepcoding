@@ -17,7 +17,7 @@ class Solution(object):
         if root is None:
             return None
         queue = [root, None]
-        current = None
+        prev = None
         while queue:
             node = queue.pop(0)
             if node is None:
@@ -26,11 +26,11 @@ class Solution(object):
                     break
                 else:
                     queue.append(None)
-                current = None
+                prev = None
             else:
-                if current is not None:
-                    current.next = node
-                current = node
+                if prev is not None:
+                    prev.next = node
+                prev = node
                 if node.left:
                     queue.append(node.left)
                 if node.right:

@@ -17,6 +17,7 @@ def my_cmp(a, b):
 class Solution:
     def maxEnvelopes(self, envelopes: List[List[int]]) -> int:
         envelopes = sorted(envelopes, key=cmp_to_key(my_cmp))
+        # solve longest increasing sub-sequence
         dp = []
         for w, h in envelopes:
             i = self.bs(dp, h)
@@ -27,7 +28,7 @@ class Solution:
         return len(dp)
 
     def bs(self, nums, t):
-        # find the first one that is >= target
+        # find the first one that is > target
         l, r = 0, len(nums)-1
         while l <= r:
             m = l + (r-l)//2

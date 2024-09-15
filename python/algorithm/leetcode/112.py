@@ -8,21 +8,18 @@ from common import TreeNode
 #         self.right = None
 
 class Solution(object):
-    def dfs(self, root, tmp, acc, sum):
+    def dfs(self, root, sum):
         if root is None:
             return False
         if root.left is None and root.right is None:
             # reach leaf
-            if root.val + acc == sum:
+            if root.val == sum:
                 return True
             else:
                 return False
         else:
-            tmp.append(root.val)
-            acc += root.val
-            ret = self.dfs(root.left, tmp, acc, sum) or self.dfs(root.right, tmp, acc, sum)
-            tmp.pop()
-            return ret
+            sum -= root.val
+            return self.dfs(root.left, sum) or self.dfs(root.right, sum)
 
     def hasPathSum(self, root, sum):
         """
@@ -30,7 +27,7 @@ class Solution(object):
         :type sum: int
         :rtype: bool
         """
-        return self.dfs(root, [], 0, sum)
+        return self.dfs(root, sum)
 
 
 if __name__ == '__main__':

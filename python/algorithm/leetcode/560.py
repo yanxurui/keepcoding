@@ -13,7 +13,7 @@ class Solution(object):
         prev = 0
         for i in range(len(nums)):
             s = prev + nums[i] # sum of the first i+1 eles
-            rst += d[(s-k)]
+            rst += d[s-k]
             d[s] += 1
             prev = s
         return rst

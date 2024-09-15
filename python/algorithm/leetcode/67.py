@@ -10,8 +10,6 @@ class Solution(object):
         i = 1
         ans = []
         s = 0
-        import pdb
-        # pdb.set_trace()
         while i <= l1 or i <= l2:
             if i <= l1:
                 s += int(a[-i])

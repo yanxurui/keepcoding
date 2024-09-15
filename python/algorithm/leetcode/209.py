@@ -1,5 +1,5 @@
 # https://leetcode.com/problems/minimum-size-subarray-sum/discuss/59093/Python-O(n)-and-O(n-log-n)-solution
-
+# 2 pointers
 class Solution(object):
     def minSubArrayLen(self, s, nums):
         """

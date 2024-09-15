@@ -4,7 +4,7 @@ class Solution(object):
             return [-1,-1]
         mid = (low+high)/2
         m = nums[mid]
-        if m==target:
+        if m == target:
             s = mid
             e = mid
             while s >=0 and nums[s] == target:

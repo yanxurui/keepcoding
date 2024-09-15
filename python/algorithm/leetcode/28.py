@@ -1,5 +1,7 @@
 class Solution:
     def build(self, needle):
+        # idx[i] = k means
+        # the longest common part of the prefix and suffix of needle[0:i] is k 
         idx = [-1] * len(needle)
         for i in range(1, len(needle)):
             k = idx[i-1]
@@ -15,6 +17,8 @@ class Solution:
         idx = self.build(needle)
         k = 0
         for i, c in enumerate(haystack):
+            # here the first k chars of needle match a substring
+            # in haystack that ends at i-1
             while k != 0 and not needle[k] == c:
                 k = idx[k-1] + 1
             if needle[k] == c:
