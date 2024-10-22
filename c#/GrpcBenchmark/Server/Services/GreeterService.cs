@@ -26,6 +26,25 @@ public class GreeterService : Greeter.GreeterBase
         _logger = logger;
     }
 
+    private static ByteString GetByteString(uint size)
+    {
+        if (!responseMap.TryGetValue(size, out ByteString? byteString))
+        {
+            if (size > 1000000000)
+            {
+                // 1 KB by default
+                byteString = responseMap[1000];
+            }
+            else
+            {
+                byteString = ByteString.CopyFrom(new byte[size]);
+                responseMap.Add(size, byteString);
+            }
+        }
+
+        return byteString;
+    }
+
     public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
     {
         return Task.FromResult(new HelloReply
@@ -36,11 +55,7 @@ public class GreeterService : Greeter.GreeterBase
 
     public override Task<DownloadReply> Download(DownloadRequest request, ServerCallContext context)
     {
-        if (!responseMap.TryGetValue(request.RequestSize, out ByteString? byteString))
-        {
-            // 1 KB by default
-            byteString = responseMap[1000];
-        }
+        ByteString byteString = GetByteString(request.RequestSize);
 
         return Task.FromResult(new DownloadReply
         {
@@ -53,11 +68,7 @@ public class GreeterService : Greeter.GreeterBase
         while (await requestStream.MoveNext() && !context.CancellationToken.IsCancellationRequested)
         {
             uint requestSize = requestStream.Current.RequestSize;
-            if (!responseMap.TryGetValue(requestSize, out ByteString? byteString))
-            {
-                // 1 KB by default
-                byteString = responseMap[1000];
-            }
+            ByteString byteString = GetByteString(requestSize);
 
             await responseStream.WriteAsync(new DownloadReply
             {

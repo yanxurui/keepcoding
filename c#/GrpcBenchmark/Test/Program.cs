@@ -8,36 +8,39 @@ using System.Threading.Channels;
 
 // The port number must match the port of the gRPC server.
 var url = "https://localhost:5001";
-//using var channel = GrpcChannel.ForAddress(url);
-//var client = new Greeter.GreeterClient(channel);
+using var channel = GrpcChannel.ForAddress(url);
+var client = new Greeter.GreeterClient(channel);
 DownloadRequest downloadRequest = new DownloadRequest { RequestSize = 10 };
 
-// TestTimeout();
+await LargeResponse();
 
-SocketsHttpHandler socketsHttpHandler = new() { EnableMultipleHttp2Connections = true };
-
-GrpcChannelOptions channelOptions = new()
+async Task TestClient()
 {
-    DisposeHttpClient = true
-};
+    
+    SocketsHttpHandler socketsHttpHandler = new() { EnableMultipleHttp2Connections = true };
 
-channelOptions.HttpClient = new HttpClient(socketsHttpHandler);
+    GrpcChannelOptions channelOptions = new()
+    {
+        DisposeHttpClient = true
+    };
 
-using var channel = GrpcChannel.ForAddress(url, channelOptions);
-var client = new Greeter.GreeterClient(channel);
+    channelOptions.HttpClient = new HttpClient(socketsHttpHandler);
 
-var stream = client.DownloadStream();
+    using var channel = GrpcChannel.ForAddress(url, channelOptions);
+    var client = new Greeter.GreeterClient(channel);
 
-foreach (var i in Enumerable.Range(0, 2))
-{
+    var stream = client.DownloadStream();
 
-    await stream.RequestStream.WriteAsync(downloadRequest);
+    foreach (var i in Enumerable.Range(0, 2))
+    {
 
-    await stream.ResponseStream.MoveNext();
+        await stream.RequestStream.WriteAsync(downloadRequest);
+
+        await stream.ResponseStream.MoveNext();
+    }
+
+    await stream.RequestStream.CompleteAsync();
 }
-
-await stream.RequestStream.CompleteAsync();
-
 
 void TestTimeout()
 {
@@ -97,6 +100,7 @@ async Task ConcurrentDownload()
 /// <summary>
 /// Verify that EnableKernelResponseBuffering can help to improve throughput for large responses.
 /// 2 vs 14 seconds
+/// However, it only takes 1.5s for Kestrel TCP
 /// </summary>
 async Task LargeResponse()
 {
@@ -107,6 +111,8 @@ async Task LargeResponse()
         {
             MaxReceiveMessageSize = 200 * 1024 * 1024
         });
+
+    var client = new Greeter.GreeterClient(channel);
 
     Stopwatch stopwatch = new Stopwatch();
     stopwatch.Start();
@@ -135,6 +141,7 @@ async Task DownloadStream()
         await PrintThread();
     }
 }
+
 async Task PrintThread()
 {
     int threadId = Thread.CurrentThread.ManagedThreadId;

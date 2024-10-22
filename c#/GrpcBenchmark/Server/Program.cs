@@ -17,7 +17,7 @@ if (useHttpSys)
     builder.WebHost.UseHttpSys(options =>
     {
         options.MaxRequestBodySize = 30_000_000;
-        options.UrlPrefixes.Add("https://*:5002");
+        options.UrlPrefixes.Add("https://+:5002/");
         options.EnableKernelResponseBuffering = true;
     });
 #pragma warning restore CA1416 // Validate platform compatibility
