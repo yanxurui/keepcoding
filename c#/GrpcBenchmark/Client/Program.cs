@@ -49,7 +49,6 @@ async Task Main(string[] args)
         }
     }
 
-
     Console.WriteLine("Final results:");
     for (int size = o.MinSize; size <= o.MaxSize; size *= 10)
     {
@@ -57,7 +56,7 @@ async Task Main(string[] args)
         var median = results[size].OrderBy(r => r.RequestPerSecond).ElementAt(o.Runs / 2);
 
         // Console.WriteLine("Size: {0}B, Requests/sec: {1}, Average Latency: {2:F2}ms", size, median.RequestPerSecond, median.AverageLatency);
-        // print in csv format
+        // print in csv format for easy copy-paste to spreadsheet
         Console.WriteLine("{0}, {1}, {2:F2}", size, median.RequestPerSecond, median.AverageLatency);
     }
 }
@@ -95,22 +94,27 @@ async Task<Result> Run(Options o)
             await Task.Delay(1000);
             // will advance pbar to 1 out of totalTicks.
             // also advance and update the progressbar text
-            currentCount = result.Latencies.Count;
+            currentCount = result.RequestCount;
             pbar.Tick($"Payload: {o.Size}, QPS: {currentCount-lastCount} reqs/sec");
             lastCount = currentCount;
         }
     }
 
-    // await Task.WhenAll(tasks);
-
     // Print stats
     Console.WriteLine("{0} requests in {1}s, {2:F2}GB read", result.RequestCount, result.Duration, 1.0 * result.ResponseSize / (1 << 30));
-    if (result.FailedRequests.Count > 0)
+    if (result.FailedRequestCount > 0)
     {
-        Console.WriteLine("Non-2xx or 3xx responses: {0}", result.FailedRequests.Count);
+        Console.WriteLine("Errored responses: {0}", result.FailedRequestCount);
     }
     Console.WriteLine("Requests/sec: {0}", result.RequestPerSecond);
     Console.WriteLine("Average Latency: {0:F2}ms", result.AverageLatency);
+    Console.WriteLine("P95 Latency: {0:F2}ms", result.GetPercentileLatency(0.95));
+    Console.WriteLine("P99 Latency: {0:F2}ms", result.GetPercentileLatency(0.99));
+    Console.WriteLine("Top 5 Latencies:");
+    foreach (var latency in result.GetTopLatenies(5))
+    {
+        Console.WriteLine("{0:F2}", latency);
+    }
 
     return result;
 }
@@ -154,11 +158,20 @@ async Task RunConnection(Greeter.GreeterClient client, Options o, Result result)
         // var channel = CreateChannel(o.Url);
         // client = new Greeter.GreeterClient(channel);
 
-        reply = await client.DownloadAsync(downloadRequest);
+        try
+        {
+            reply = await client.DownloadAsync(downloadRequest);
+        }
+        catch (RpcException ex)
+        {
+            // Handle gRPC-specific exceptions
+            Console.WriteLine($"gRPC error: {ex.Status.Detail}");
+            reply = null;
+        }
 
         // await channel.ShutdownAsync();
 
-        result.Add(sw.Elapsed.TotalMilliseconds - t, reply.Body.Length);
+        result.Add(sw.Elapsed.TotalMilliseconds - t, reply == null? 0: reply.Body.Length, reply == null);
     }
 }
 
@@ -175,14 +188,29 @@ async Task RunConnectionStreaming(Greeter.GreeterClient client, Options o, Resul
     {
         t = sw.Elapsed.TotalMilliseconds;
 
-        await stream.RequestStream.WriteAsync(downloadRequest);
-
-        // Receive the response  
-        if (await stream.ResponseStream.MoveNext(CancellationToken.None))
+        try
         {
-            reply = stream.ResponseStream.Current;
-            result.Add(sw.Elapsed.TotalMilliseconds - t, reply.Body.Length);
+            await stream.RequestStream.WriteAsync(downloadRequest);
+
+            // Receive the response. Is this the right way to use streaming?
+            if (await stream.ResponseStream.MoveNext(CancellationToken.None))
+            {
+                reply = stream.ResponseStream.Current;
+            }
+            else
+            {
+                Console.WriteLine("streaming has completed unexpectedly");
+                break;
+            }
         }
+        catch (RpcException ex)
+        {
+            // Handle gRPC-specific exceptions
+            Console.WriteLine($"gRPC error: {ex.Status.Detail}");
+            reply = null;
+        }
+
+        result.Add(sw.Elapsed.TotalMilliseconds - t, reply == null? 0 : reply.Body.Length, reply == null);
     }
 
     await stream.RequestStream.CompleteAsync();
@@ -239,41 +267,29 @@ GrpcChannel CreateChannel(string address)
 
 public class Result
 {
+    private long responseSize = 0;
+
     public double Duration { get; set; }
 
-    public int RequestPerSecond
-    {
-        get
-        {
-            return (int)(requestCount / Duration);
-        }
-    }
+    private ConcurrentBag<double> latencies = new ConcurrentBag<double>();
 
-    public double AverageLatency
-    {
-        get
-        {
-            if (Latencies.Count == 0)
-            {
-                return 0;
-            }
+    private int failedRequestCount = 0;
 
-            return Latencies.Average();
-        }
-    }
-
-    public ConcurrentBag<double> Latencies = new ConcurrentBag<double>();
-    public ConcurrentBag<int> FailedRequests = new ConcurrentBag<int>();
-
-    private int requestCount = 0;
-
-    private long responseSize = 0;
+    private IList<double> latenciesOrdered = null;
 
     public int RequestCount
     {
         get
         {
-            return requestCount;
+            return latencies.Count;
+        }
+    }
+
+    public int FailedRequestCount
+    {
+        get
+        {
+            return failedRequestCount;
         }
     }
 
@@ -285,12 +301,67 @@ public class Result
         }
     }
 
-
-    public void Add(double latency, int responseLength)
+    public int RequestPerSecond
     {
-        Interlocked.Increment(ref requestCount);
+        get
+        {
+            return (int)(RequestCount / Duration);
+        }
+    }
+
+    public double AverageLatency
+    {
+        get
+        {
+            if (latencies.Count == 0)
+            {
+                return 0;
+            }
+
+            return latencies.Average();
+        }
+    }
+
+    public IList<double> LatenciesOrdered
+    {
+        get
+        {
+            if (latenciesOrdered == null)
+            {
+                latenciesOrdered = latencies.OrderBy(latency => latency).ToList();
+            }
+
+            return latenciesOrdered;
+        }
+
+    }
+
+    public void Add(double latency, int responseLength, bool failed = false)
+    {
         Interlocked.Add(ref responseSize, responseLength);
-        Latencies.Add(latency);
+        latencies.Add(latency);
+
+        if (failed)
+        {
+            Interlocked.Increment(ref failedRequestCount);
+        }
+    }
+
+    
+    public double GetPercentileLatency(double percentile)
+    {
+        if (LatenciesOrdered.Count == 0)
+        {
+            return 0;
+        }
+
+        int index = (int)(percentile * LatenciesOrdered.Count);
+        return LatenciesOrdered[index];
+    }
+
+    public List<double> GetTopLatenies(int count)
+    {
+        return LatenciesOrdered.TakeLast(count).ToList();
     }
 }
 

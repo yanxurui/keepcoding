@@ -12,7 +12,6 @@ if (args.Length > 0)
 
 if (useHttpSys)
 {
-
 #pragma warning disable CA1416 // Validate platform compatibility
     builder.WebHost.UseHttpSys(options =>
     {
