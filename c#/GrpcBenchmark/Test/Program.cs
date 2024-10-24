@@ -1,172 +1,178 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Grpc.Net.Client;
 using Greet;
 using System.Threading.Channels;
+using System.Net.Http;
+using System.Collections.Generic;
+using System.Linq;
+using System.IO;
+using System;
 
-// The port number must match the port of the gRPC server.
-var url = "https://localhost:5001";
-using var channel = GrpcChannel.ForAddress(url);
-var client = new Greeter.GreeterClient(channel);
-DownloadRequest downloadRequest = new DownloadRequest { RequestSize = 10 };
-
-await LargeResponse();
-
-async Task TestClient()
+namespace Test
 {
-    
-    SocketsHttpHandler socketsHttpHandler = new() { EnableMultipleHttp2Connections = true };
-
-    GrpcChannelOptions channelOptions = new()
+    [TestClass]
+    public class Test
     {
-        DisposeHttpClient = true
-    };
+        private readonly string url = "https://localhost:5001";
+        private Greeter.GreeterClient client;
+        private DownloadRequest downloadRequest;
 
-    channelOptions.HttpClient = new HttpClient(socketsHttpHandler);
-
-    using var channel = GrpcChannel.ForAddress(url, channelOptions);
-    var client = new Greeter.GreeterClient(channel);
-
-    var stream = client.DownloadStream();
-
-    foreach (var i in Enumerable.Range(0, 2))
-    {
-
-        await stream.RequestStream.WriteAsync(downloadRequest);
-
-        await stream.ResponseStream.MoveNext();
-    }
-
-    await stream.RequestStream.CompleteAsync();
-}
-
-void TestTimeout()
-{
-    SocketsHttpHandler socketsHttpHandler = new() { EnableMultipleHttp2Connections = true };
-
-    GrpcChannelOptions channelOptions = new()
-    {
-        DisposeHttpClient = true
-    };
-
-    channelOptions.HttpClient = new HttpClient(socketsHttpHandler);
-
-    var channel = GrpcChannel.ForAddress(url, channelOptions);
-    var client = new Greeter.GreeterClient(channel);
-    client.Sleep(new SleepRequest { Seconds = 105 });
-    Console.WriteLine("Done");
-}
-
-/// <summary>
-/// Test blocking operations in the server side will create new threads
-/// </summary>
-async Task Sleep()
-{
-    Task<Empty> sleep5 = client.SleepAsync(new SleepRequest { Seconds = 5 }).ResponseAsync;
-    Task<Empty> sleep1 = client.SleepAsync(new SleepRequest { Seconds = 0 }).ResponseAsync;
-    Task task1 = Sleep(5);
-    Task task2 = Sleep(1);
-    await PrintThread();
-
-    async Task Sleep(int seconds)
-    {
-        await client.SleepAsync(new SleepRequest { Seconds = (uint)seconds });
-        await PrintThread();
-    }
-}
-
-/// <summary>
-/// Test if concurrent requests in the client can share the same thread
-/// </summary>
-async Task ConcurrentDownload()
-{
-    Stopwatch stopwatch = new Stopwatch();
-    stopwatch.Start();
-
-    List<Task> tasks = new List<Task>();
-    for (int i = 0; i < 10; i++)
-    {
-        tasks.Add(DownloadStream());
-    }
-    await Task.WhenAll(tasks);
-
-    stopwatch.Stop();
-    Console.WriteLine("Elapsed time {0} seconds", stopwatch.Elapsed.TotalSeconds);
-}
-
-
-/// <summary>
-/// Verify that EnableKernelResponseBuffering can help to improve throughput for large responses.
-/// 2 vs 14 seconds
-/// However, it only takes 1.5s for Kestrel TCP
-/// </summary>
-async Task LargeResponse()
-{
-    // http.sys
-    using var channel = GrpcChannel.ForAddress(
-        "https://127.0.0.1:5002",
-        new GrpcChannelOptions
+        [TestInitialize]
+        public void Initialize()
         {
-            MaxReceiveMessageSize = 200 * 1024 * 1024
-        });
+            var channel = GrpcChannel.ForAddress(url);
+            client = new Greeter.GreeterClient(channel);
+            downloadRequest = new DownloadRequest { RequestSize = 10 };
+        }
 
-    var client = new Greeter.GreeterClient(channel);
-
-    Stopwatch stopwatch = new Stopwatch();
-    stopwatch.Start();
-
-    var resp = await client.DownloadAsync(new DownloadRequest { RequestSize = 200_000_000 });
-    File.WriteAllBytes(@".\out", resp.Body.ToByteArray());
-
-    stopwatch.Stop();
-    Console.WriteLine("Elapsed time {0} seconds", stopwatch.Elapsed.TotalSeconds);
-}
-
-async Task DownloadStream()
-{
-    var stream = client.DownloadStream();
-
-    for (int i = 0; i < 1; i++)
-    {
-        await stream.RequestStream.WriteAsync(downloadRequest);
-    }
-
-    await stream.RequestStream.CompleteAsync();
-
-    while (await stream.ResponseStream.MoveNext())
-    {
-        DownloadReply reply = stream.ResponseStream.Current;
-        await PrintThread();
-    }
-}
-
-async Task PrintThread()
-{
-    int threadId = Thread.CurrentThread.ManagedThreadId;
-    Console.WriteLine($"Thread id: {threadId}");
-}
-
-async Task TestIsCompleted()
-{
-    // create an array of 3 tasks with each of them waiting for 1, 2, 3 seconds
-    Task[] tasks = new Task[3];
-    for (int i = 0; i < 3; i++)
-    {
-        int seconds = i + 1;
-        tasks[i] = Task.Run(async () =>
+        [TestMethod]
+        public async Task TestClient()
         {
-            await Task.Delay(seconds * 1000);
-        });
-    }
+            SocketsHttpHandler socketsHttpHandler = new() { EnableMultipleHttp2Connections = true };
 
-    Task waitingTask = Task.WhenAll(tasks);
+            GrpcChannelOptions channelOptions = new()
+            {
+                DisposeHttpClient = true,
+                HttpClient = new HttpClient(socketsHttpHandler)
+            };
 
-    // check if the task is completed every 1 second
-    while (!waitingTask.IsCompleted)
-    {
-        Console.WriteLine("still running");
-        await Task.Delay(1000);
+            using var channel = GrpcChannel.ForAddress(url, channelOptions);
+            var client = new Greeter.GreeterClient(channel);
+
+            var stream = client.DownloadStream();
+
+            foreach (var i in Enumerable.Range(0, 2))
+            {
+                await stream.RequestStream.WriteAsync(downloadRequest);
+                await stream.ResponseStream.MoveNext();
+            }
+
+            await stream.RequestStream.CompleteAsync();
+        }
+
+        [TestMethod]
+        public void TestTimeout()
+        {
+            SocketsHttpHandler socketsHttpHandler = new() { EnableMultipleHttp2Connections = true };
+
+            GrpcChannelOptions channelOptions = new()
+            {
+                DisposeHttpClient = true,
+                HttpClient = new HttpClient(socketsHttpHandler)
+            };
+
+            var channel = GrpcChannel.ForAddress(url, channelOptions);
+            var client = new Greeter.GreeterClient(channel);
+            client.Sleep(new SleepRequest { Seconds = 105 });
+            Console.WriteLine("Done");
+        }
+
+        [TestMethod]
+        public async Task Sleep()
+        {
+            Task<Empty> sleep5 = client.SleepAsync(new SleepRequest { Seconds = 5 }).ResponseAsync;
+            Task<Empty> sleep0 = client.SleepAsync(new SleepRequest { Seconds = 0 }).ResponseAsync;
+            Task task1 = Sleep(5);
+            Task task2 = Sleep(1);
+            PrintThread();
+
+            async Task Sleep(int seconds)
+            {
+                await client.SleepAsync(new SleepRequest { Seconds = (uint)seconds });
+                PrintThread();
+            }
+
+            await Task.WhenAll(sleep5, sleep0, task1, task2);
+        }
+
+        [TestMethod]
+        public async Task ConcurrentDownload()
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            List<Task> tasks = new List<Task>();
+            for (int i = 0; i < 10; i++)
+            {
+                tasks.Add(DownloadStream());
+            }
+            await Task.WhenAll(tasks);
+
+            stopwatch.Stop();
+            Console.WriteLine("Elapsed time {0} seconds", stopwatch.Elapsed.TotalSeconds);
+        }
+
+        [TestMethod]
+        public async Task LargeResponse()
+        {
+            using var channel = GrpcChannel.ForAddress(
+                "https://127.0.0.1:5002",
+                new GrpcChannelOptions
+                {
+                    MaxReceiveMessageSize = 200 * 1024 * 1024
+                });
+
+            var client = new Greeter.GreeterClient(channel);
+
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            var resp = await client.DownloadAsync(new DownloadRequest { RequestSize = 200_000_000 });
+            File.WriteAllBytes(@".\out", resp.Body.ToByteArray());
+
+            stopwatch.Stop();
+            Console.WriteLine("Elapsed time {0} seconds", stopwatch.Elapsed.TotalSeconds);
+        }
+
+        [TestMethod]
+        public async Task DownloadStream()
+        {
+            var stream = client.DownloadStream();
+
+            for (int i = 0; i < 1; i++)
+            {
+                await stream.RequestStream.WriteAsync(downloadRequest);
+            }
+
+            await stream.RequestStream.CompleteAsync();
+
+            while (await stream.ResponseStream.MoveNext())
+            {
+                DownloadReply reply = stream.ResponseStream.Current;
+                PrintThread();
+            }
+        }
+
+        [TestMethod]
+        public async Task TestIsCompleted()
+        {
+            Task[] tasks = new Task[3];
+            for (int i = 0; i < 3; i++)
+            {
+                int seconds = i + 1;
+                tasks[i] = Task.Run(async () =>
+                {
+                    await Task.Delay(seconds * 1000);
+                });
+            }
+
+            Task waitingTask = Task.WhenAll(tasks);
+
+            while (!waitingTask.IsCompleted)
+            {
+                Console.WriteLine("still running");
+                await Task.Delay(1000);
+            }
+        }
+
+        private void PrintThread()
+        {
+            int threadId = Thread.CurrentThread.ManagedThreadId;
+            Console.WriteLine($"Thread id: {threadId}");
+        }
     }
 }
