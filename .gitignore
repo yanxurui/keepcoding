@@ -9,7 +9,15 @@
 
 # Python byte code
 *.pyc
+.python-version
 
+# log files
+*.log
+*.out
+out.txt
+
+# temporary files
+tmp*
 # c#
 obj/
 bin/

@@ -9,6 +9,20 @@ class Solution:
             m = max(m, s)
         return m
 
+class Solution2:
+    def maxSubArray(self, nums):
+        s = 0
+        minSum = 0
+        curSum = 0
+        ans = -(1<<31)
+        for n in nums:
+            curSum += n # sum of the first i+1 nums
+            sumOfSubArray = curSum - minSum
+            if sumOfSubArray > ans:
+                ans = sumOfSubArray
+            minSum = min(minSum, curSum)
+        return ans
+
 if __name__ == '__main__':
     from testfunc import test
 
@@ -20,6 +34,10 @@ if __name__ == '__main__':
         (
             [-1, -2],
             -1
+        ),
+        (
+            [3,-1,4],
+            6
         )
     ]
     test(Solution().maxSubArray, test_data)

@@ -3,7 +3,7 @@ import math
 class Solution:
     def bulbSwitch(self, n: int) -> int:
         # n bulbs: 1,2,...,n
-        # in the i-th round, bulbs whose # can be divisble by i will be toggled
+        # in the i-th round, bulbs whose # can be dividable by i will be toggled
         # if 1<=m<=n can be divisible by i<=m, then there must exist j<=m that i*j=m
         # if i!=j, bulb m will be left off
         # if i==j, bulb m will be toggled on

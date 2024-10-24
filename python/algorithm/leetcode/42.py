@@ -12,6 +12,8 @@ class Solution(object):
         while l <= r:
             if height[l] < height[r]:
                 if height[l] < ml:
+                    # there is an implicit condition here:
+                    # height[ml] < height[ml]
                     total += ml - height[l]
                 else:
                     ml = height[l]

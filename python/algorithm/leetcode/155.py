@@ -6,7 +6,6 @@ class MinStack(object):
         initialize your data structure here.
         """
         self._stack = None
-        self._min = None
         
 
     def push(self, x):

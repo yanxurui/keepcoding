@@ -13,7 +13,6 @@ class Solution(object):
             if c.isdigit():
                 num = 10*num + int(c)
             else:
-                
                 if op == '*':
                     nums.append(nums.pop() * num)
                 if op == '/':

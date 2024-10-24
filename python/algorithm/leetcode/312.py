@@ -9,7 +9,7 @@ class Solution:
         for l in range(2, n): # length of range
             for i in range(0, n-l): # left
                 j = i + l # right
-                for k in range(i+1, j): # the last ballon to burst between (i,j)
+                for k in range(i+1, j): # the last balloon to burst between (i,j)
                     dp[i][j] = max(dp[i][j], dp[i][k]+dp[k][j]+nums[i]*nums[k]*nums[j])
         return dp[0][n-1]
 

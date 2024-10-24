@@ -39,6 +39,45 @@ class Solution(object):
         rst += num*op
         return rst
 
+# improved
+class Solution2(object):
+    def calculate(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        nums = [] # stack of last operand
+        num = 0 # last operand
+        ops = [] # stack of last operator
+        op = 1 # last operator
+        rst = 0 # current result
+        i = 0
+        while i < len(s):
+            c = s[i]
+            if c.isdigit():
+                while i < len(s) and s[i].isdigit():
+                    num = 10*num + int(s[i])
+                    i += 1
+                # end of a num, do the math
+                rst += num * op
+                num = 0
+                continue
+            elif c == '+':
+                op = 1
+            elif c == '-':
+                op = -1
+            elif c == '(':
+                nums.append(rst)
+                ops.append(op)
+                rst = 0
+                op = 1
+                num = 0
+            elif c == ')':
+                rst = nums.pop() + rst * ops.pop()
+                num = 0
+            i += 1
+        return rst
+
 
 if __name__ == '__main__':
     from testfunc import test
@@ -68,4 +107,4 @@ if __name__ == '__main__':
             0
         )
     ]
-    test(Solution().calculate, test_data)
+    test(Solution2().calculate, test_data)

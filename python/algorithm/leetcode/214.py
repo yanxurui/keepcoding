@@ -19,6 +19,33 @@ class Solution(object):
             lps[i] = k
         return rs[:len(rs)-lps[-1]] + s
 
+# bad
+# class Solution2:
+#     def shortestPalindrome(self, s: str) -> str:
+#         if not s:
+#             return s
+#         n = len(s)
+#         l = n
+#         for i in range(n//2, -1, -1):
+#             if i > 0 and s[0:i][::-1] == s[i:2*i]: # even
+#                 return s[2*i:][::-1] + s
+#             if 2*i+1 <= n and s[0:i][::-1] == s[i+1:2*i+1]: # odd
+#                 return s[2*i+1:][::-1] + s
+        
+
+class Solution3:
+    def shortestPalindrome(self, s: str) -> str:
+        if not s:
+            return s
+        for i in range(len(s)-1, -1, -1):
+            l = 0
+            r = i
+            while l < r and s[l] == s[r]:
+                l += 1
+                r -= 1
+            if l >= r:
+                # found a palindrome
+                return s[i+1:][::-1] + s
 
 
 if __name__ == '__main__':
@@ -50,4 +77,4 @@ if __name__ == '__main__':
             'a'*1000000
         )
     ]
-    test(Solution().shortestPalindrome, test_data)
+    test(Solution3().shortestPalindrome, test_data)

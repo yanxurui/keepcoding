@@ -4,8 +4,6 @@ from typing import List
 class Solution:
     def diffWaysToCompute(self, input: str) -> List[int]:
         rst = []
-        import pdb
-        # pdb.set_trace()
         for i, c in enumerate(input):
             if c in '+-*':
                 for a in self.diffWaysToCompute(input[:i]):

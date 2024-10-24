@@ -16,7 +16,7 @@ class Solution(object):
             m = 0
             overlap = 0
             d = defaultdict(int)
-            for j in range(i+1, len(points)):
+            for j in range(i):
                 x2, y2 = points[j]
                 dx, dy = x2 - x1, y2 - y1
                 if dx == 0 and dy == 0:

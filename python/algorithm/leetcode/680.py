@@ -13,7 +13,7 @@ class Solution:
         while i < j and s[i] == s[j]:
             i += 1
             j -=1
-        return s[i] == s[j]
+        return i >= j
         
 
 

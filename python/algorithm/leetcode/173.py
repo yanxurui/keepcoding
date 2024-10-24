@@ -9,37 +9,28 @@ from common import TreeNode
 class BSTIterator:
 
     def __init__(self, root: TreeNode):
-        self._p = root
         self._stack = []
-        if self._p is not None:
-            while self._p.left:
-                self._stack.append(self._p)
-                self._p = self._p.left
+        self._pushLeft(root)
 
     def next(self) -> int:
         """
         @return the next smallest number
         """
-        res = self._p.val
-        if self._p.right:
-            self._p = self._p.right
-            while self._p.left:
-                self._stack.append(self._p)
-                self._p = self._p.left
-        else:
-            if self._stack:
-                self._p = self._stack.pop()
-            else:
-                self._p = None
-        return res
+        assert len(self._stack) > 0
+        node = self._stack.pop()
+        self._pushLeft(node.right)
+        return node.val
 
     def hasNext(self) -> bool:
         """
         @return whether we have a next smallest number
         """
-        return self._p != None
-        
+        return len(self._stack) > 0
 
+    def _pushLeft(self, node):
+        while node is not None:
+            self._stack.append(node)
+            node = node.left
 
 # Your BSTIterator object will be instantiated and called as such:
 # obj = BSTIterator(root)

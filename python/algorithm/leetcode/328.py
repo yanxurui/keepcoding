@@ -21,6 +21,25 @@ class Solution:
         odd.next = evenHead
         return head
 
+    def oddEvenList2(self, head: ListNode):
+        '''
+        rewrite on 09.16.2023
+        '''
+        if not head:
+            return head
+        oddHead = odd = ListNode(0)
+        evenHead = even = ListNode(0)
+        while head:
+            odd.next = head
+            odd = odd.next
+            head = head.next
+            even.next = head
+            even = even.next
+            if head:
+                head = head.next
+        odd.next = evenHead.next
+        return oddHead.next
+
 
 if __name__ == '__main__':
     from testfunc import test
@@ -39,4 +58,4 @@ if __name__ == '__main__':
             ListNode.create([1,3,5,7,2,4,6,8])
         )
     ]
-    test(Solution().oddEvenList, test_data)
+    test(Solution().oddEvenList2, test_data)

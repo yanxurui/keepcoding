@@ -4,30 +4,23 @@ INT_MIN = -(1 << 31)
 class Solution:
     def myAtoi(self, str: str) -> int:
         rst = 0
+        sign = 1
         i = 0
         while i < len(str) and str[i] == ' ':
             i += 1
-        if i >= len(str):
-            return rst
-        sign = 1
-        import pdb
-        # pdb.set_trace()
-        if str[i] == '-' or str[i] == '+':
+        if i < len(str) and (str[i] == '-' or str[i] == '+'):
             if str[i] == '-':
                 sign = -1
             i += 1
-        while i < len(str):
-            c = str[i]
-            if c.isdigit():
-                rst = 10 * rst + int(c)
-                if rst > INT_MAX:
-                    if sign == 1:
-                        return INT_MAX
-                    else:
-                        return INT_MIN
-                i += 1
-            else:
-                break
+        while i < len(str) and str[i].isdigit():
+            rst = 10 * rst + int(str[i])
+            if rst > INT_MAX:
+                if sign == 1:
+                    return INT_MAX
+                else:
+                    return INT_MIN
+            i += 1
+
         return sign * rst
 
         

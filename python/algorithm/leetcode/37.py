@@ -30,7 +30,7 @@ class Solution(object):
         seq = sorted(seq, key=lambda v: len(v[2]))
         seq_bak = deepcopy(seq)
         stack = defaultdict(list)
-        k = 0
+        k = 0 # fill cell at blank k (the (k+1)th position)
         while k >= 0 and k < len(seq):
             i,j,possible = seq[k]
             # print(k,(i,j))

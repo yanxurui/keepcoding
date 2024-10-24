@@ -1,5 +1,5 @@
 from common import TreeNode
-
+from collections import deque
 # Definition for a binary tree node.
 # class TreeNode(object):
 #     def __init__(self, x):
@@ -7,6 +7,7 @@ from common import TreeNode
 #         self.left = None
 #         self.right = None
 
+# recursive
 class Solution(object):
     def flatten(self, root):
         """
@@ -24,10 +25,32 @@ class Solution(object):
             p.right = root.right
             root.right = root.left
             root.left = None
-        
+
+# iterative
+class Solution2(object):
+    def flatten(self, root):
+        """
+        :type root: TreeNode
+        :rtype: None Do not return anything, modify root in-place instead.
+        """
+        if root is None:
+            return None
+        head = prev = TreeNode(0)
+        # traverse in pre-order
+        stack = [root]
+        while stack:
+            cur = stack.pop()
+            if cur:
+                stack.append(cur.right)
+                stack.append(cur.left)
+                cur.left = None
+                prev.right = cur
+                prev = cur
+        return head.right
+
 
 def wrapper(root):
-    Solution().flatten(root)
+    Solution2().flatten(root)
     return root
 
 

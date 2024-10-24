@@ -5,17 +5,11 @@ class Solution:
         n = len(height)
         rst = 0
         i, j = 0, n-1
-        l, r = 0, 0
         while i < j:
-            if height[i] > l or height[j] > r:
-                if height[i] > l:
-                    l = height[i]
-                if height[j] > r:
-                    r = height[j]
-                width = j - i
-                short = min(l, r)
-                area = short * width
-                rst = max(rst, area)
+            width = j - i
+            short = min(height[i], height[j])
+            area = short * width
+            rst = max(rst, area)
             if height[i] <= height[j]:
                 i += 1
             else:

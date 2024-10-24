@@ -14,40 +14,35 @@ class Solution(object):
         :type head: ListNode
         :rtype: None Do not return anything, modify head in-place instead.
         """
-        if head is None or head.next is None:
+        if head is None:
             return
+        
         # 1. find the middle of the list
-        p1 = head
-        p2 = head
-        while p2.next and p2.next.next:
-            p1 = p1.next
-            p2 = p2.next.next
+        slow = head
+        fast = head
+        while fast.next and fast.next.next:
+            slow = slow.next
+            fast = fast.next.next
 
-        # print(p1)
-        # 2. reverse the second half
-        pre_middle = p1
-        pre_current = pre_middle.next
-        while pre_current.next:
-            current = pre_current.next
-            pre_current.next = current.next
-            current.next = pre_middle.next
-            pre_middle.next = current
-        # print(head)
-        # 3. reorder
+        # 2. reverse the second half (nodes after slow)
+        p = slow.next
+        slow.next = None
+        while p:
+            tmp = p.next
+            p.next = slow.next
+            slow.next = p
+            p = tmp
+
+        # 3. alternate
         p1 = head
-        p2 = pre_middle.next
-        while p1 != pre_middle:
-            pre_middle.next = p2.next
+        p2 = slow.next
+        while p1 and p2:
+            slow.next = p2.next
             p2.next = p1.next
             p1.next = p2
             p1 = p2.next
-            p2 = pre_middle.next
-        # print(head)
-
-
-def wrapper(head):
-    Solution().reorderList(head)
-    return head
+            p2 = slow.next
+        return head
 
 
 if __name__ == '__main__':
@@ -70,5 +65,5 @@ if __name__ == '__main__':
             ListNode.create([1,7,2,6,3,5,4])
         ),
     ]
-    test(wrapper, test_data)
+    test(Solution().reorderList, test_data)
 

@@ -17,6 +17,8 @@ class Solution(object):
                 if word1[i-1] == word2[j-1]:
                     table[i][j] = table[i-1][j-1]
                 else:
+                    # from word1 to word2
+                    # replace, delete, add
                     table[i][j] = min(table[i-1][j-1], min(table[i-1][j], table[i][j-1])) + 1
 
         return table[m][n]

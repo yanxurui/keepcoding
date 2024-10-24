@@ -9,8 +9,8 @@ class Solution:
         for t in range(1,k+1):
             maxTemp = -prices[0]
             for j in range(1, l):
-                tab[t][j] = max(tab[t][j-1], prices[j]+maxTemp)
-                maxTemp = max(maxTemp, tab[t-1][j-1]-prices[j]) # buy at j
+                tab[t][j] = max(tab[t][j-1], prices[j]+maxTemp) # sell at j or not
+                maxTemp = max(maxTemp, tab[t-1][j-1]-prices[j]) # buy at j or not
         return tab[k][l-1]
 
     def quickSolver(self, prices):
@@ -35,8 +35,8 @@ class Solution2:
         # tmp[i] means the max money after buy or sell the i-th time
         for p in prices:
             for i in range(1, k+1):
-                tmp[i][0] = max(tmp[i][0], tmp[i-1][1] - p) # buy at p
-                tmp[i][1] = max(tmp[i][1], tmp[i][0] + p) # sell at p
+                tmp[i][0] = max(tmp[i][0], tmp[i-1][1] - p) # buy at p or not
+                tmp[i][1] = max(tmp[i][1], tmp[i][0] + p) # sell at p or not
         return tmp[k][1]
     
     def quickSolver(self, prices):

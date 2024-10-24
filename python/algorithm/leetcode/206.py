@@ -13,7 +13,7 @@ class Solution(object):
         :rtype: ListNode
         """
         # return self.reverseListInt(head, None)
-        return self.reverseListIte(head)
+        return self.reverseListIte3(head)
 
     def reverseListRec(self, head, tail):
         if not head:
@@ -31,6 +31,24 @@ class Solution(object):
             head = newHead
         return tail
 
+    def reverseListIte2(self, head):
+        ans = None
+        while head:
+            newHead = head.next
+            head.next = ans
+            ans = head
+            head = newHead
+        return ans
+
+    def reverseListIte3(self, head):
+        prev = None
+        cur = head
+        while cur:
+            nxt = cur.next
+            cur.next = prev
+            prev = cur
+            cur = nxt
+        return prev
 
 if __name__ == '__main__':
     from testfunc import test

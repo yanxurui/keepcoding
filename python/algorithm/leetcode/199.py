@@ -28,8 +28,12 @@ if __name__ == '__main__':
     from common import TreeNode
     test_data = [
         (
-            (TreeNode.create([1,2,3,None,5,None,4])),
+            TreeNode.create([1,2,3,None,5,None,4]),
             [1,3,4]
+        ),
+        (
+            TreeNode.create([1,2,3,None,5,6,None,4]),
+            [1,3,6,4]
         )
     ]
     test(Solution().rightSideView, test_data)

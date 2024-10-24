@@ -10,7 +10,7 @@ class Solution:
         i = j = k = 0
         while j < len(chars):
             while j < len(chars) and chars[i] == chars[j]:
-                    j += 1
+                j += 1
             n = j - i
             chars[k] = chars[i]
             k += 1
@@ -37,5 +37,5 @@ if __name__ == '__main__':
             4
         ),
     ]
-    test(Solution().compress, test_data)
+    test(Solution2().compress, test_data)
 

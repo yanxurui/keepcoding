@@ -27,6 +27,25 @@ class Solution(object):
         return res
 
 
+class Solution2(object):
+    def preorderTraversal(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        res = []
+
+        stack = [root]
+        while stack:
+            p = stack.pop()
+            if p:
+                res.append(p.val)
+                stack.append(p.right)
+                stack.append(p.left)
+        return res
+
+
+
 if __name__ == '__main__':
     from testfunc import test
     test_data = [
@@ -35,5 +54,5 @@ if __name__ == '__main__':
             [1,2,3]
         )
     ]
-    test(Solution().preorderTraversal, test_data)
+    test(Solution2().preorderTraversal, test_data)
 

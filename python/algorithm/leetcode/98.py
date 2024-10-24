@@ -28,7 +28,28 @@ class Solution(object):
         :rtype: bool
         """
         return self.recursive(root, -INT_MAX, INT_MAX)
-        
+
+class Solution2(object):
+    def isValidBST(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        stack = []
+        pre = None
+        while root or stack:
+            # push left
+            while root:
+                stack.append(root)
+                root = root.left
+            p = stack.pop()
+            if pre and pre.val >= p.val:
+                return False
+            else:
+                pre = p
+            root = p.right
+        return True
+
 
 if __name__ == '__main__':
     from testfunc import test
@@ -55,5 +76,5 @@ if __name__ == '__main__':
             False
         )
     ]
-    test(Solution().isValidBST, test_data)
+    test(Solution2().isValidBST, test_data)
 
