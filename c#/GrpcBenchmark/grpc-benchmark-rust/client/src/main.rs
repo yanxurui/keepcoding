@@ -123,7 +123,7 @@ impl Result {
     }
 }
 
-async fn create_channel(url: &str) -> Result<Channel, Box<dyn std::error::Error>> {
+async fn create_channel(url: &str) -> std::result::Result<Channel, Box<dyn std::error::Error + Send + Sync>> {
     let channel = Channel::from_shared(url.to_string())?
         .connect()
         .await?;
@@ -132,9 +132,9 @@ async fn create_channel(url: &str) -> Result<Channel, Box<dyn std::error::Error>
 
 async fn run_connection(
     client: GreeterClient<Channel>,
-    args: &Args,
-    result: &Result,
-) -> Result<(), Box<dyn std::error::Error>> {
+    args: Args,
+    result: Result,
+) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let download_request = DownloadRequest {
         request_size: args.min_size,
     };
@@ -148,9 +148,12 @@ async fn run_connection(
         let response = if args.streaming {
             // For streaming, we'll use a simple approach
             // In a real implementation, you might want to maintain the stream
-            let mut stream = client.clone().download_stream(tonic::Request::new(
-                futures::stream::once(async { download_request.clone() })
+            let request_for_stream = download_request.clone();
+            let response = client.clone().download_stream(tonic::Request::new(
+                futures::stream::once(async move { request_for_stream })
             )).await?;
+
+            let mut stream = response.into_inner();
 
             if let Some(reply) = stream.next().await {
                 reply?
@@ -158,11 +161,11 @@ async fn run_connection(
                 continue;
             }
         } else {
-            client.clone().download(tonic::Request::new(download_request.clone())).await?
+            client.clone().download(tonic::Request::new(download_request.clone())).await?.into_inner()
         };
 
         let latency = request_start.elapsed().as_millis() as f64;
-        let response_length = response.get_ref().body.len();
+        let response_length = response.body.len();
         
         result.add(latency, response_length, false).await;
     }
@@ -170,13 +173,15 @@ async fn run_connection(
     Ok(())
 }
 
-async fn run_thread(args: &Args, result: &Result) -> Result<(), Box<dyn std::error::Error>> {
+async fn run_thread(args: Args, result: Result) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let mut tasks = Vec::new();
     let channel = create_channel(&args.url).await?;
 
     for _ in 0..args.connections {
         let client = GreeterClient::new(channel.clone());
-        let task = tokio::spawn(run_connection(client, args, result));
+        let args_clone = args.clone();
+        let result_clone = result.clone();
+        let task = tokio::spawn(run_connection(client, args_clone, result_clone));
         tasks.push(task);
     }
 
@@ -187,7 +192,7 @@ async fn run_thread(args: &Args, result: &Result) -> Result<(), Box<dyn std::err
     Ok(())
 }
 
-async fn run_benchmark(args: &Args) -> Result<Result, Box<dyn std::error::Error>> {
+async fn run_benchmark(args: &Args) -> std::result::Result<Result, Box<dyn std::error::Error + Send + Sync>> {
     println!(
         "Running {}s test @ {} with size {} bytes",
         args.duration, args.url, args.min_size
@@ -198,7 +203,7 @@ async fn run_benchmark(args: &Args) -> Result<Result, Box<dyn std::error::Error>
     let mut tasks = Vec::new();
 
     for _ in 0..args.threads {
-        let task = tokio::spawn(run_thread(args, &result));
+        let task = tokio::spawn(run_thread(args.clone(), result.clone()));
         tasks.push(task);
     }
 
@@ -256,7 +261,7 @@ async fn run_benchmark(args: &Args) -> Result<Result, Box<dyn std::error::Error>
 }
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+async fn main() -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let args = Args::parse();
     let mut results: HashMap<u32, Vec<Result>> = HashMap::new();
 

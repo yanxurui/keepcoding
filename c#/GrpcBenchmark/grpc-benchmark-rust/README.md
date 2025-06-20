@@ -42,6 +42,10 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source ~/.cargo/env
 ```
 
+**Windows:**
+Download rustup-init.exe from https://www.rust-lang.org/tools/install
+
+
 ### Installing Protocol Buffers
 
 **Ubuntu/Debian:**
@@ -57,6 +61,13 @@ brew install protobuf
 
 **Windows:**
 Download from https://github.com/protocolbuffers/protobuf/releases
+```
+1. Extract protoc-31.1-win64.zip to a folder (e.g., C:\protoc)
+2. Add the bin folder to your PATH environment variable:
+   - Open System Properties > Advanced > Environment Variables
+   - Edit the PATH variable and add: C:\protoc\bin
+3. Verify installation: protoc --version
+```
 
 ## Building
 
@@ -68,6 +79,7 @@ cd grpc-benchmark-rust
 # Build all crates
 cargo build --release
 ```
+
 
 ## Usage
 

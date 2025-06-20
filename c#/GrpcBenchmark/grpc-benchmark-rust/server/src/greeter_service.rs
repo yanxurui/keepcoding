@@ -2,6 +2,7 @@ use proto::{DownloadReply, DownloadRequest, Greeter, HelloReply, HelloRequest, S
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
+use tokio_stream::wrappers::ReceiverStream;
 use tonic::{Request, Response, Status};
 use tracing::info;
 
@@ -48,7 +49,7 @@ impl Greeter for GreeterService {
         Ok(Response::new(reply))
     }
 
-    type DownloadStreamStream = tonic::codec::Streaming<DownloadReply>;
+    type DownloadStreamStream = ReceiverStream<Result<DownloadReply, Status>>;
 
     async fn download_stream(
         &self,
@@ -69,7 +70,7 @@ impl Greeter for GreeterService {
             }
         });
 
-        Ok(Response::new(tonic::codec::Streaming::new(rx)))
+        Ok(Response::new(ReceiverStream::new(rx)))
     }
 
     async fn sleep(
