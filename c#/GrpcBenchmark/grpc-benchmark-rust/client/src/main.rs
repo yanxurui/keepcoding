@@ -43,6 +43,10 @@ struct Args {
     /// Minimum payload size
     #[arg(long, default_value_t = 10)]
     min_size: u32,
+
+    /// Current payload size for testing
+    #[arg(skip)]
+    size: u32,
 }
 
 #[derive(Clone)]
@@ -136,7 +140,7 @@ async fn run_connection(
     result: Result,
 ) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let download_request = DownloadRequest {
-        request_size: args.min_size,
+        request_size: args.size,
     };
 
     let start = Instant::now();
@@ -195,7 +199,7 @@ async fn run_thread(args: Args, result: Result) -> std::result::Result<(), Box<d
 async fn run_benchmark(args: &Args) -> std::result::Result<Result, Box<dyn std::error::Error + Send + Sync>> {
     println!(
         "Running {}s test @ {} with size {} bytes",
-        args.duration, args.url, args.min_size
+        args.duration, args.url, args.size
     );
     println!("{} threads and {} connections", args.threads, args.connections);
 
@@ -222,7 +226,7 @@ async fn run_benchmark(args: &Args) -> std::result::Result<Result, Box<dyn std::
         
         let (current_count, _, _, _) = result.get_stats().await;
         let qps = current_count - last_count;
-        pb.set_message(format!("Payload: {}, QPS: {} reqs/sec", args.min_size, qps));
+        pb.set_message(format!("Payload: {}, QPS: {} reqs/sec", args.size, qps));
         pb.inc(1);
         last_count = current_count;
     }
@@ -274,8 +278,7 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error + Send + Sy
         let mut size = args.min_size;
         while size <= args.max_size {
             let mut test_args = args.clone();
-            test_args.min_size = size;
-            test_args.max_size = size;
+            test_args.size = size;
 
             let result = run_benchmark(&test_args).await?;
             
