@@ -2,7 +2,7 @@ use clap::Parser;
 use futures::StreamExt;
 use indicatif::{ProgressBar, ProgressStyle};
 use proto::greet::greeter_client::GreeterClient;
-use proto::{DownloadRequest, SleepRequest};
+use proto::DownloadRequest;
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
@@ -221,7 +221,7 @@ async fn run_benchmark(args: &Args) -> std::result::Result<Result, Box<dyn std::
     );
 
     let mut last_count = 0;
-    for i in 0..args.duration {
+    for _i in 0..args.duration {
         tokio::time::sleep(Duration::from_secs(1)).await;
         
         let (current_count, _, _, _) = result.get_stats().await;
