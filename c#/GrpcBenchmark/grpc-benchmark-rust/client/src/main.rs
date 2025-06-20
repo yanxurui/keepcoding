@@ -270,7 +270,9 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error + Send + Sy
         println!("Round {}/{}", i + 1, args.runs);
         println!("===================================");
 
-        for size in (args.min_size..=args.max_size).step_by((args.max_size / args.min_size) as usize) {
+        // Generate logarithmic steps: 10, 100, 1000, 10000, 100000, 1000000
+        let mut size = args.min_size;
+        while size <= args.max_size {
             let mut test_args = args.clone();
             test_args.min_size = size;
             test_args.max_size = size;
@@ -281,11 +283,15 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error + Send + Sy
 
             println!();
             tokio::time::sleep(Duration::from_secs(2)).await;
+
+            // Multiply by 10 for next iteration
+            size *= 10;
         }
     }
 
     println!("Final results:");
-    for size in (args.min_size..=args.max_size).step_by((args.max_size / args.min_size) as usize) {
+    let mut size = args.min_size;
+    while size <= args.max_size {
         if let Some(run_results) = results.get(&size) {
             let mut requests_per_second: Vec<u64> = run_results
                 .iter()
@@ -311,6 +317,7 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error + Send + Sy
 
             println!("{}, {}, {:.2}", size, median_rps, median_latency);
         }
+        size *= 10;
     }
 
     Ok(())
