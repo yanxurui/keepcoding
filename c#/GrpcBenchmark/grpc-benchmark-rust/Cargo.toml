@@ -1,0 +1,14 @@
+[workspace]
+members = [
+    "proto",
+    "server",
+    "client",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Your Name <your.email@example.com>"]
+description = "gRPC Benchmark Tool in Rust"
+license = "MIT"
+repository = "https://github.com/yourusername/grpc-benchmark-rust" 

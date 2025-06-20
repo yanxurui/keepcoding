@@ -1,0 +1,21 @@
+[package]
+name = "client"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+description = "gRPC Benchmark Client"
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "client"
+path = "src/main.rs"
+
+[dependencies]
+proto = { path = "../proto" }
+tonic = "0.10"
+tokio = { version = "1.0", features = ["full"] }
+clap = { version = "4.0", features = ["derive"] }
+anyhow = "1.0"
+indicatif = "0.17"
+futures = "0.3" 
