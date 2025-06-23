@@ -168,7 +168,7 @@ async fn run_connection(
             client.clone().download(tonic::Request::new(download_request.clone())).await?.into_inner()
         };
 
-        let latency = request_start.elapsed().as_millis() as f64;
+        let latency = request_start.elapsed().as_micros() as f64 / 1000.0;
         let response_length = response.body.len();
         
         result.add(latency, response_length, false).await;
