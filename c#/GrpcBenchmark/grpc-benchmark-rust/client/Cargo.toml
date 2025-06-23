@@ -13,10 +13,10 @@ path = "src/main.rs"
 
 [dependencies]
 proto = { path = "../proto" }
-tonic = "0.13"
-prost = "0.13"
-tokio = { version = "1.0", features = ["full"] }
-clap = { version = "4.0", features = ["derive"] }
-anyhow = "1.0"
-indicatif = "0.17"
-futures = "0.3" 
+tonic.workspace = true
+prost.workspace = true
+tokio = { workspace = true, features = ["full"] }
+clap.workspace = true
+anyhow.workspace = true
+indicatif.workspace = true
+futures.workspace = true 

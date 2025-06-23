@@ -8,8 +8,8 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
-tonic = "0.13"
-prost = "0.13"
+tonic.workspace = true
+prost.workspace = true
 
 [build-dependencies]
-tonic-build = "0.13" 
+tonic-build.workspace = true 
