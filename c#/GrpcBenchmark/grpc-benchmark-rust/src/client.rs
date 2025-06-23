@@ -1,13 +1,15 @@
 use clap::Parser;
 use futures::StreamExt;
-use indicatif::{ProgressBar, ProgressStyle};
-use proto::greet::greeter_client::GreeterClient;
-use proto::DownloadRequest;
-use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 use tokio::sync::RwLock;
 use tonic::transport::Channel;
+
+// Include the generated proto code inline
+tonic::include_proto!("greet");
+
+// Import the generated types
+use crate::greeter_client::GreeterClient;
 
 #[derive(Parser, Clone)]
 #[command(author, version, about, long_about = None)]
@@ -198,130 +200,67 @@ async fn run_thread(args: Args, result: Result) -> std::result::Result<(), Box<d
 
 async fn run_benchmark(args: &Args) -> std::result::Result<Result, Box<dyn std::error::Error + Send + Sync>> {
     println!(
-        "Running {}s test @ {} with size {} bytes",
-        args.duration, args.url, args.size
+        "Starting benchmark with {} threads, {} connections per thread, {} seconds duration",
+        args.threads, args.connections, args.duration
     );
-    println!("{} threads and {} connections", args.threads, args.connections);
 
     let result = Result::new(args.duration as f64);
     let mut tasks = Vec::new();
 
     for _ in 0..args.threads {
-        let task = tokio::spawn(run_thread(args.clone(), result.clone()));
+        let args_clone = args.clone();
+        let result_clone = result.clone();
+        let task = tokio::spawn(run_thread(args_clone, result_clone));
         tasks.push(task);
     }
 
-    // Progress bar
-    let pb = ProgressBar::new(args.duration);
-    pb.set_style(
-        ProgressStyle::default_bar()
-            .template("{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {pos}/{len} ({eta})")
-            .unwrap()
-            .progress_chars("#>-"),
-    );
-
-    let mut last_count = 0;
-    for _i in 0..args.duration {
-        tokio::time::sleep(Duration::from_secs(1)).await;
-        
-        let (current_count, _, _, _) = result.get_stats().await;
-        let qps = current_count - last_count;
-        pb.set_message(format!("Payload: {}, QPS: {} reqs/sec", args.size, qps));
-        pb.inc(1);
-        last_count = current_count;
-    }
-
-    pb.finish_with_message("Benchmark completed");
-
-    // Wait for all tasks to complete
     for task in tasks {
         task.await??;
-    }
-
-    let (request_count, response_size, failed_count, latencies) = result.get_stats().await;
-
-    println!(
-        "{} requests in {}s, {:.2}GB read",
-        request_count,
-        args.duration,
-        response_size as f64 / (1 << 30) as f64
-    );
-
-    if failed_count > 0 {
-        println!("Errored responses: {}", failed_count);
-    }
-
-    println!("Requests/sec: {}", result.requests_per_second(request_count));
-    println!("Average Latency: {:.2}ms", result.average_latency(&latencies));
-    println!("P95 Latency: {:.2}ms", result.percentile_latency(&latencies, 0.95));
-    println!("P99 Latency: {:.2}ms", result.percentile_latency(&latencies, 0.99));
-    
-    println!("Top 5 Latencies:");
-    for latency in result.top_latencies(&latencies, 5) {
-        println!("{:.2}", latency);
     }
 
     Ok(result)
 }
 
+fn print_results(result: &Result, run: u32) {
+    let (request_count, response_size, failed_count, latencies) = futures::executor::block_on(result.get_stats());
+    
+    println!("\n=== Run {} Results ===", run);
+    println!("Total Requests: {}", request_count);
+    println!("Failed Requests: {}", failed_count);
+    println!("Total Response Size: {} bytes", response_size);
+    println!("Requests per Second: {}", result.requests_per_second(request_count));
+    println!("Average Latency: {:.2} ms", result.average_latency(&latencies));
+    println!("50th Percentile Latency: {:.2} ms", result.percentile_latency(&latencies, 0.5));
+    println!("95th Percentile Latency: {:.2} ms", result.percentile_latency(&latencies, 0.95));
+    println!("99th Percentile Latency: {:.2} ms", result.percentile_latency(&latencies, 0.99));
+    
+    let top_latencies = result.top_latencies(&latencies, 5);
+    println!("Top 5 Latencies: {:?} ms", top_latencies);
+}
+
 #[tokio::main]
 async fn main() -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let args = Args::parse();
-    let mut results: HashMap<u32, Vec<Result>> = HashMap::new();
+    let mut args = Args::parse();
+    
+    // Set a default size for testing
+    args.size = args.min_size;
 
-    for i in 0..args.runs {
-        println!("===================================");
-        println!("Round {}/{}", i + 1, args.runs);
-        println!("===================================");
+    println!("gRPC Benchmark Client");
+    println!("URL: {}", args.url);
+    println!("Runs: {}", args.runs);
+    println!("Duration: {} seconds", args.duration);
+    println!("Threads: {}", args.threads);
+    println!("Connections per thread: {}", args.connections);
+    println!("Streaming: {}", args.streaming);
+    println!("Payload size: {} bytes", args.size);
 
-        // Generate logarithmic steps: 10, 100, 1000, 10000, 100000, 1000000
-        let mut size = args.min_size;
-        while size <= args.max_size {
-            let mut test_args = args.clone();
-            test_args.size = size;
-
-            let result = run_benchmark(&test_args).await?;
-            
-            results.entry(size).or_insert_with(Vec::new).push(result);
-
-            println!();
-            tokio::time::sleep(Duration::from_secs(2)).await;
-
-            // Multiply by 10 for next iteration
-            size *= 10;
-        }
+    for run in 1..=args.runs {
+        println!("\nStarting run {} of {}", run, args.runs);
+        
+        let result = run_benchmark(&args).await?;
+        print_results(&result, run);
     }
 
-    println!("Final results:");
-    let mut size = args.min_size;
-    while size <= args.max_size {
-        if let Some(run_results) = results.get(&size) {
-            let mut requests_per_second: Vec<u64> = run_results
-                .iter()
-                .map(|r| {
-                    let (count, _, _, _) = futures::executor::block_on(r.get_stats());
-                    r.requests_per_second(count)
-                })
-                .collect();
-            
-            requests_per_second.sort();
-            let median_rps = requests_per_second[requests_per_second.len() / 2];
-
-            let mut avg_latencies: Vec<f64> = run_results
-                .iter()
-                .map(|r| {
-                    let (_, _, _, latencies) = futures::executor::block_on(r.get_stats());
-                    r.average_latency(&latencies)
-                })
-                .collect();
-            
-            avg_latencies.sort_by(|a, b| a.partial_cmp(b).unwrap());
-            let median_latency = avg_latencies[avg_latencies.len() / 2];
-
-            println!("{}, {}, {:.2}", size, median_rps, median_latency);
-        }
-        size *= 10;
-    }
-
+    println!("\nBenchmark completed!");
     Ok(())
 } 

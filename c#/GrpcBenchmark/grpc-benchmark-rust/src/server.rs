@@ -1,10 +1,15 @@
-use proto::{DownloadReply, DownloadRequest, Greeter, HelloReply, HelloRequest, SleepRequest};
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use tokio_stream::wrappers::ReceiverStream;
 use tonic::{Request, Response, Status};
 use tracing::info;
+
+// Include the generated proto code inline
+tonic::include_proto!("greet");
+
+// Import the generated types
+use crate::greeter_server::{Greeter, GreeterServer};
 
 #[derive(Default)]
 pub struct GreeterService {
@@ -87,4 +92,21 @@ impl Greeter for GreeterService {
         
         Ok(Response::new(()))
     }
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    tracing_subscriber::fmt::init();
+
+    let addr = "[::1]:50051".parse()?;
+    let greeter = GreeterService::default();
+
+    println!("GreeterServer listening on {}", addr);
+
+    tonic::transport::Server::builder()
+        .add_service(GreeterServer::new(greeter))
+        .serve(addr)
+        .await?;
+
+    Ok(())
 } 
