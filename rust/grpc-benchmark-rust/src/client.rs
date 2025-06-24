@@ -3,9 +3,12 @@ use futures::StreamExt;
 use indicatif::{ProgressBar, ProgressStyle};
 use std::collections::HashMap;
 use std::sync::Arc;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{Duration, Instant};
 use tokio::sync::RwLock;
 use tonic::transport::Channel;
+use std::cell::RefCell;
+use std::thread_local;
 
 // Include the generated proto code inline
 tonic::include_proto!("greet");
@@ -51,53 +54,84 @@ struct Args {
     /// Current payload size for testing
     #[arg(skip)]
     size: u32,
+
+    /// High performance mode - disable latency collection for max throughput
+    #[arg(long)]
+    high_perf: bool,
+}
+
+// Thread-local storage for latencies
+thread_local! {
+    static THREAD_LATENCIES: RefCell<Vec<f64>> = RefCell::new(Vec::new());
 }
 
 #[derive(Clone)]
 struct Result {
-    request_count: Arc<RwLock<u64>>,
-    response_size: Arc<RwLock<u64>>,
-    failed_count: Arc<RwLock<u64>>,
+    request_count: Arc<AtomicU64>,
+    response_size: Arc<AtomicU64>,
+    failed_count: Arc<AtomicU64>,
     latencies: Arc<RwLock<Vec<f64>>>,
     duration: f64,
+    high_perf: bool,
 }
 
 impl Result {
-    fn new(duration: f64) -> Self {
+    fn new(duration: f64, high_perf: bool) -> Self {
         Self {
-            request_count: Arc::new(RwLock::new(0)),
-            response_size: Arc::new(RwLock::new(0)),
-            failed_count: Arc::new(RwLock::new(0)),
+            request_count: Arc::new(AtomicU64::new(0)),
+            response_size: Arc::new(AtomicU64::new(0)),
+            failed_count: Arc::new(AtomicU64::new(0)),
             latencies: Arc::new(RwLock::new(Vec::new())),
             duration,
+            high_perf,
         }
     }
 
     async fn add(&self, latency: f64, response_length: usize, failed: bool) {
-        {
-            let mut count = self.request_count.write().await;
-            *count += 1;
-        }
-        
+        // Use atomic operations - no locks needed!
+        self.request_count.fetch_add(1, Ordering::Relaxed);
+
         if !failed {
-            let mut size = self.response_size.write().await;
-            *size += response_length as u64;
+            self.response_size.fetch_add(response_length as u64, Ordering::Relaxed);
         } else {
-            let mut failed = self.failed_count.write().await;
-            *failed += 1;
+            self.failed_count.fetch_add(1, Ordering::Relaxed);
         }
 
-        let mut latencies = self.latencies.write().await;
-        latencies.push(latency);
+        // Store latency in thread-local storage - no locks!
+        if !self.high_perf {
+            THREAD_LATENCIES.with(|latencies| {
+                latencies.borrow_mut().push(latency);
+            });
+        }
     }
 
     async fn get_stats(&self) -> (u64, u64, u64, Vec<f64>) {
-        let request_count = *self.request_count.read().await;
-        let response_size = *self.response_size.read().await;
-        let failed_count = *self.failed_count.read().await;
-        let latencies = self.latencies.read().await.clone();
+        // Atomic reads - no locks needed!
+        let request_count = self.request_count.load(Ordering::Relaxed);
+        let response_size = self.response_size.load(Ordering::Relaxed);
+        let failed_count = self.failed_count.load(Ordering::Relaxed);
         
+        // Collect latencies from all threads
+        let latencies = if self.high_perf {
+            Vec::new()
+        } else {
+            self.collect_all_latencies().await
+        };
+
         (request_count, response_size, failed_count, latencies)
+    }
+
+    async fn collect_all_latencies(&self) -> Vec<f64> {
+        // This is called only once at the end, so locking is acceptable
+        let mut all_latencies = Vec::new();
+        
+        // Collect from thread-local storage
+        THREAD_LATENCIES.with(|latencies| {
+            let mut thread_latencies = latencies.borrow_mut();
+            all_latencies.append(&mut *thread_latencies);
+        });
+
+        all_latencies
     }
 
     fn requests_per_second(&self, request_count: u64) -> u64 {
@@ -116,10 +150,10 @@ impl Result {
         if latencies.is_empty() {
             return 0.0;
         }
-        
+
         let mut sorted = latencies.to_vec();
         sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
-        
+
         let index = ((percentile * sorted.len() as f64) - 1.0).max(0.0) as usize;
         sorted[index.min(sorted.len() - 1)]
     }
@@ -143,6 +177,7 @@ async fn run_connection(
     args: Args,
     result: Result,
 ) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    // Create the inner request once and reuse it
     let download_request = DownloadRequest {
         request_size: args.size,
     };
@@ -156,9 +191,8 @@ async fn run_connection(
         let response = if args.streaming {
             // For streaming, we'll use a simple approach
             // In a real implementation, you might want to maintain the stream
-            let request_for_stream = download_request.clone();
             let response = client.clone().download_stream(tonic::Request::new(
-                futures::stream::once(async move { request_for_stream })
+                futures::stream::once(async move { download_request.clone() })
             )).await?;
 
             let mut stream = response.into_inner();
@@ -169,6 +203,7 @@ async fn run_connection(
                 continue;
             }
         } else {
+            // Create the tonic request inside the loop - this is actually more efficient
             client.clone().download(tonic::Request::new(download_request.clone())).await?.into_inner()
         };
 
@@ -207,7 +242,7 @@ async fn run_benchmark(args: &Args) -> std::result::Result<Result, Box<dyn std::
     );
     println!("{} threads and {} connections", args.threads, args.connections);
 
-    let result = Result::new(args.duration as f64);
+    let result = Result::new(args.duration as f64, args.high_perf);
     let mut tasks = Vec::new();
 
     for _ in 0..args.threads {
@@ -228,7 +263,8 @@ async fn run_benchmark(args: &Args) -> std::result::Result<Result, Box<dyn std::
     for _i in 0..args.duration {
         tokio::time::sleep(Duration::from_secs(1)).await;
         
-        let (current_count, _, _, _) = result.get_stats().await;
+        // Use atomic read - much faster than get_stats()
+        let current_count = result.request_count.load(std::sync::atomic::Ordering::Relaxed);
         let qps = current_count - last_count;
         pb.set_message(format!("Payload: {}, QPS: {} reqs/sec", args.size, qps));
         pb.inc(1);
@@ -260,19 +296,24 @@ fn print_results(result: &Result) {
     }
 
     println!("Requests/sec: {}", result.requests_per_second(request_count));
-    println!("Average Latency: {:.2}ms", result.average_latency(&latencies));
-    println!("P95 Latency: {:.2}ms", result.percentile_latency(&latencies, 0.95));
-    println!("P99 Latency: {:.2}ms", result.percentile_latency(&latencies, 0.99));
+    
+    if !result.high_perf && !latencies.is_empty() {
+        println!("Average Latency: {:.2}ms", result.average_latency(&latencies));
+        println!("P95 Latency: {:.2}ms", result.percentile_latency(&latencies, 0.95));
+        println!("P99 Latency: {:.2}ms", result.percentile_latency(&latencies, 0.99));
 
-    println!("Top 5 Latencies:");
-    for latency in result.top_latencies(&latencies, 5) {
-        println!("{:.2}", latency);
+        println!("Top 5 Latencies:");
+        for latency in result.top_latencies(&latencies, 5) {
+            println!("{:.2}", latency);
+        }
+    } else if result.high_perf {
+        println!("Latency statistics disabled in high-performance mode");
     }
 }
 
 #[tokio::main]
 async fn main() -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let args = Args::parse();
+    let mut args = Args::parse();
     let mut results: HashMap<u32, Vec<Result>> = HashMap::new();
 
     for i in 0..args.runs {
@@ -283,10 +324,9 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error + Send + Sy
         // Generate logarithmic steps: 10, 100, 1000, 10000, 100000, 1000000
         let mut size = args.min_size;
         while size <= args.max_size {
-            let mut test_args = args.clone();
-            test_args.size = size;
+            args.size = size; // Modify in place instead of cloning
 
-            let result = run_benchmark(&test_args).await?;
+            let result = run_benchmark(&args).await?;
             
             results.entry(size).or_insert_with(Vec::new).push(result);
 
