@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{Duration, Instant};
-use tokio::sync::RwLock;
+use tokio::sync::mpsc;
 use tonic::transport::Channel;
 
 // Include the generated proto code inline
@@ -59,17 +59,23 @@ struct Result {
     request_count: Arc<AtomicU64>,
     response_size: Arc<AtomicU64>,
     failed_count: Arc<AtomicU64>,
-    latencies: Arc<RwLock<Vec<f64>>>,
+    latency_sender: mpsc::UnboundedSender<f64>,
+    // Arc<Mutex<>> wrapper is needed because mpsc::UnboundedReceiver is not Clone,
+    // but we need Result to be Clone. The receiver is only accessed from a single thread
+    // after all tasks complete, so the mutex is not for thread safety but for Clone support.
+    latency_receiver: Arc<tokio::sync::Mutex<mpsc::UnboundedReceiver<f64>>>,
     duration: f64,
 }
 
 impl Result {
     fn new(duration: f64) -> Self {
+        let (latency_sender, latency_receiver) = mpsc::unbounded_channel();
         Self {
             request_count: Arc::new(AtomicU64::new(0)),
             response_size: Arc::new(AtomicU64::new(0)),
             failed_count: Arc::new(AtomicU64::new(0)),
-            latencies: Arc::new(RwLock::new(Vec::new())),
+            latency_sender,
+            latency_receiver: Arc::new(tokio::sync::Mutex::new(latency_receiver)),
             duration,
         }
     }
@@ -84,9 +90,8 @@ impl Result {
             self.failed_count.fetch_add(1, Ordering::Relaxed);
         }
 
-        // Store latency with lock
-        let mut latencies = self.latencies.write().await;
-        latencies.push(latency);
+        // Send latency through channel - no locks!
+        let _ = self.latency_sender.send(latency);
     }
 
     async fn get_stats(&self) -> (u64, u64, u64, Vec<f64>) {
@@ -95,8 +100,14 @@ impl Result {
         let response_size = self.response_size.load(Ordering::Relaxed);
         let failed_count = self.failed_count.load(Ordering::Relaxed);
         
-        // Read latencies with lock
-        let latencies = self.latencies.read().await.clone();
+        // Collect all latencies from the shared receiver
+        let mut latencies = Vec::new();
+        let mut receiver = self.latency_receiver.lock().await;
+        
+        // Drain all available latencies
+        while let Ok(latency) = receiver.try_recv() {
+            latencies.push(latency);
+        }
 
         (request_count, response_size, failed_count, latencies)
     }
