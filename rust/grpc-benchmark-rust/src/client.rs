@@ -7,8 +7,6 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{Duration, Instant};
 use tokio::sync::RwLock;
 use tonic::transport::Channel;
-use std::cell::RefCell;
-use std::thread_local;
 
 // Include the generated proto code inline
 tonic::include_proto!("greet");
@@ -56,11 +54,6 @@ struct Args {
     size: u32,
 }
 
-// Thread-local storage for latencies
-thread_local! {
-    static THREAD_LATENCIES: RefCell<Vec<f64>> = RefCell::new(Vec::new());
-}
-
 #[derive(Clone)]
 struct Result {
     request_count: Arc<AtomicU64>,
@@ -91,10 +84,9 @@ impl Result {
             self.failed_count.fetch_add(1, Ordering::Relaxed);
         }
 
-        // Store latency in thread-local storage - no locks!
-        THREAD_LATENCIES.with(|latencies| {
-            latencies.borrow_mut().push(latency);
-        });
+        // Store latency with lock
+        let mut latencies = self.latencies.write().await;
+        latencies.push(latency);
     }
 
     async fn get_stats(&self) -> (u64, u64, u64, Vec<f64>) {
@@ -103,23 +95,10 @@ impl Result {
         let response_size = self.response_size.load(Ordering::Relaxed);
         let failed_count = self.failed_count.load(Ordering::Relaxed);
         
-        // Collect latencies from all threads
-        let latencies = self.collect_all_latencies().await;
+        // Read latencies with lock
+        let latencies = self.latencies.read().await.clone();
 
         (request_count, response_size, failed_count, latencies)
-    }
-
-    async fn collect_all_latencies(&self) -> Vec<f64> {
-        // This is called only once at the end, so locking is acceptable
-        let mut all_latencies = Vec::new();
-        
-        // Collect from thread-local storage
-        THREAD_LATENCIES.with(|latencies| {
-            let mut thread_latencies = latencies.borrow_mut();
-            all_latencies.append(&mut *thread_latencies);
-        });
-
-        all_latencies
     }
 
     fn requests_per_second(&self, request_count: u64) -> u64 {
