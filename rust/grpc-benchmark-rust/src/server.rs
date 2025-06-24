@@ -1,7 +1,5 @@
 use clap::Parser;
 use std::collections::HashMap;
-use std::sync::Arc;
-use tokio::sync::RwLock;
 use tonic::transport::Server;
 use tokio_stream::wrappers::ReceiverStream;
 use tonic::{Request, Response, Status};
@@ -15,7 +13,7 @@ use crate::greeter_server::{Greeter, GreeterServer};
 
 #[derive(Default)]
 pub struct GreeterService {
-    response_map: Arc<RwLock<HashMap<u32, Vec<u8>>>>,
+    response_map: HashMap<u32, Vec<u8>>,
 }
 
 impl GreeterService {
@@ -30,14 +28,12 @@ impl GreeterService {
         }
 
         Self {
-            response_map: Arc::new(RwLock::new(response_map)),
+            response_map,
         }
     }
 
-    async fn get_byte_string(&self, size: u32) -> Vec<u8> {
-        let map = self.response_map.read().await;
-
-        if let Some(bytes) = map.get(&size) {
+    fn get_byte_string(&self, size: u32) -> Vec<u8> {
+        if let Some(bytes) = self.response_map.get(&size) {
             bytes.clone()
         } else {
             // Fallback for unexpected sizes (shouldn't happen with our benchmark)
@@ -64,7 +60,7 @@ impl Greeter for GreeterService {
         request: Request<DownloadRequest>,
     ) -> Result<Response<DownloadReply>, Status> {
         let request_size = request.into_inner().request_size;
-        let body = self.get_byte_string(request_size).await;
+        let body = self.get_byte_string(request_size);
 
         let reply = DownloadReply { body };
         Ok(Response::new(reply))
