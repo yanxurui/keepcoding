@@ -98,7 +98,7 @@ impl Greeter for GreeterService {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::fmt::init();
 
-    let addr = "[::1]:50051".parse()?;
+    let addr = "[::1]:5001".parse()?;
     let greeter = GreeterService::default();
 
     println!("GreeterServer listening on {}", addr);
