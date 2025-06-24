@@ -54,10 +54,6 @@ struct Args {
     /// Current payload size for testing
     #[arg(skip)]
     size: u32,
-
-    /// High performance mode - disable latency collection for max throughput
-    #[arg(long)]
-    high_perf: bool,
 }
 
 // Thread-local storage for latencies
@@ -72,18 +68,16 @@ struct Result {
     failed_count: Arc<AtomicU64>,
     latencies: Arc<RwLock<Vec<f64>>>,
     duration: f64,
-    high_perf: bool,
 }
 
 impl Result {
-    fn new(duration: f64, high_perf: bool) -> Self {
+    fn new(duration: f64) -> Self {
         Self {
             request_count: Arc::new(AtomicU64::new(0)),
             response_size: Arc::new(AtomicU64::new(0)),
             failed_count: Arc::new(AtomicU64::new(0)),
             latencies: Arc::new(RwLock::new(Vec::new())),
             duration,
-            high_perf,
         }
     }
 
@@ -98,11 +92,9 @@ impl Result {
         }
 
         // Store latency in thread-local storage - no locks!
-        if !self.high_perf {
-            THREAD_LATENCIES.with(|latencies| {
-                latencies.borrow_mut().push(latency);
-            });
-        }
+        THREAD_LATENCIES.with(|latencies| {
+            latencies.borrow_mut().push(latency);
+        });
     }
 
     async fn get_stats(&self) -> (u64, u64, u64, Vec<f64>) {
@@ -112,11 +104,7 @@ impl Result {
         let failed_count = self.failed_count.load(Ordering::Relaxed);
         
         // Collect latencies from all threads
-        let latencies = if self.high_perf {
-            Vec::new()
-        } else {
-            self.collect_all_latencies().await
-        };
+        let latencies = self.collect_all_latencies().await;
 
         (request_count, response_size, failed_count, latencies)
     }
@@ -242,7 +230,7 @@ async fn run_benchmark(args: &Args) -> std::result::Result<Result, Box<dyn std::
     );
     println!("{} threads and {} connections", args.threads, args.connections);
 
-    let result = Result::new(args.duration as f64, args.high_perf);
+    let result = Result::new(args.duration as f64);
     let mut tasks = Vec::new();
 
     for _ in 0..args.threads {
@@ -297,7 +285,7 @@ fn print_results(result: &Result) {
 
     println!("Requests/sec: {}", result.requests_per_second(request_count));
     
-    if !result.high_perf && !latencies.is_empty() {
+    if !latencies.is_empty() {
         println!("Average Latency: {:.2}ms", result.average_latency(&latencies));
         println!("P95 Latency: {:.2}ms", result.percentile_latency(&latencies, 0.95));
         println!("P99 Latency: {:.2}ms", result.percentile_latency(&latencies, 0.99));
@@ -306,8 +294,6 @@ fn print_results(result: &Result) {
         for latency in result.top_latencies(&latencies, 5) {
             println!("{:.2}", latency);
         }
-    } else if result.high_perf {
-        println!("Latency statistics disabled in high-performance mode");
     }
 }
 
