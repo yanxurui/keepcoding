@@ -125,7 +125,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Initialize tracing
     tracing_subscriber::fmt::init();
 
-    let addr = "[::1]:5001".parse()?;
+    let addr = format!("[::1]:{}", args.port).parse()?;
     let greeter = GreeterService::new();
 
     println!("GreeterServer listening on {}", addr);
