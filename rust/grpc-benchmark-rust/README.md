@@ -158,3 +158,13 @@ cargo test
 cargo test -p server
 cargo test -p client
 ```
+
+### Debugging
+```bash
+# Debug build with logging
+RUST_LOG=debug cargo run --bin server
+
+# Profile with flamegraph
+cargo install flamegraph
+cargo flamegraph --bin client
+```
