@@ -265,23 +265,23 @@ GrpcChannel CreateChannel(string address)
     }
 }
 
+// Thread-safe Result class with thread-local latency collection
 public class Result
 {
     private long responseSize = 0;
+    private int failedRequestCount = 0;
+    private double[] latenciesOrdered = null;
+    
+    // Thread-local storage for latency collection
+    private readonly ThreadLocal<List<double>> threadLocalLatencies = new(() => new List<double>(5000), trackAllValues: true);
 
     public double Duration { get; set; }
-
-    private ConcurrentBag<double> latencies = new ConcurrentBag<double>();
-
-    private int failedRequestCount = 0;
-
-    private IList<double> latenciesOrdered = null;
 
     public int RequestCount
     {
         get
         {
-            return latencies.Count;
+            return threadLocalLatencies.Values.Sum(list => list.Count);
         }
     }
 
@@ -313,55 +313,77 @@ public class Result
     {
         get
         {
-            if (latencies.Count == 0)
+            var allLatencies = GetAllLatencies();
+            if (allLatencies.Length == 0)
             {
                 return 0;
             }
 
-            return latencies.Average();
+            double sum = 0;
+            for (int i = 0; i < allLatencies.Length; i++)
+            {
+                sum += allLatencies[i];
+            }
+            return sum / allLatencies.Length;
         }
     }
 
-    public IList<double> LatenciesOrdered
+    public double[] LatenciesOrdered
     {
         get
         {
             if (latenciesOrdered == null)
             {
-                latenciesOrdered = latencies.OrderBy(latency => latency).ToList();
+                latenciesOrdered = GetAllLatencies();
+                Array.Sort(latenciesOrdered);
             }
-
             return latenciesOrdered;
         }
-
     }
 
     public void Add(double latency, int responseLength, bool failed = false)
     {
         Interlocked.Add(ref responseSize, responseLength);
-        latencies.Add(latency);
+        
+        // Add to thread-local list - no synchronization needed
+        threadLocalLatencies.Value.Add(latency);
 
         if (failed)
         {
             Interlocked.Increment(ref failedRequestCount);
         }
+        
+        // Invalidate cached ordered array
+        latenciesOrdered = null;
     }
 
-    
+    private double[] GetAllLatencies()
+    {
+        // Collect all latencies from all threads
+        var allLatencies = new List<double>();
+        foreach (var threadLatencies in threadLocalLatencies.Values)
+        {
+            allLatencies.AddRange(threadLatencies);
+        }
+        return allLatencies.ToArray();
+    }
+
     public double GetPercentileLatency(double percentile)
     {
-        if (LatenciesOrdered.Count == 0)
+        var ordered = LatenciesOrdered;
+        if (ordered.Length == 0)
         {
             return 0;
         }
 
-        int index = (int)(percentile * LatenciesOrdered.Count);
-        return LatenciesOrdered[index];
+        int index = (int)(percentile * ordered.Length);
+        return ordered[index];
     }
 
     public List<double> GetTopLatenies(int count)
     {
-        return LatenciesOrdered.TakeLast(count).ToList();
+        var ordered = LatenciesOrdered;
+        return ordered.TakeLast(count).ToList();
     }
 }
 
