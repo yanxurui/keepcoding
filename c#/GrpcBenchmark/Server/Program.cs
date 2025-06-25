@@ -28,7 +28,11 @@ else
 
     builder.WebHost.ConfigureKestrel(serverOptions =>
     {
-        serverOptions.ListenAnyIP(5001, listenOptions =>
+        serverOptions.ListenAnyIP(5000, listenOptions => // HTTP
+        {
+            listenOptions.Protocols = HttpProtocols.Http2;
+        });
+        serverOptions.ListenAnyIP(5001, listenOptions => // HTTPS
         {
             listenOptions.UseHttps();
             listenOptions.Protocols = HttpProtocols.Http2;
