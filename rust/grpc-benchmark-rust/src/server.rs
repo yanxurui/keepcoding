@@ -33,12 +33,9 @@ impl GreeterService {
     }
 
     fn get_byte_string(&self, size: u32) -> Vec<u8> {
-        if let Some(bytes) = self.response_map.get(&size) {
-            bytes.clone()
-        } else {
-            // Fallback for unexpected sizes (shouldn't happen with our benchmark)
-            vec![0u8; size as usize]
-        }
+        self.response_map.get(&size)
+            .cloned()
+            .unwrap_or_else(|| vec![0u8; size as usize])
     }
 }
 
