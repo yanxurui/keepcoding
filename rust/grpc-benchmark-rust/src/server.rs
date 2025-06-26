@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use tonic::transport::Server;
 use tokio_stream::wrappers::ReceiverStream;
 use tonic::{Request, Response, Status};
-use tracing::{info, warn};
+use tracing::info;
 
 // Include the generated proto code inline
 tonic::include_proto!("greet");
@@ -129,4 +129,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     Ok(())
-} 
+}
+
+#[cfg(test)]
+mod test; 
