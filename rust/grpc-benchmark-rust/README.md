@@ -96,12 +96,6 @@ cargo build --release
 ```bash
 # Start server on default port 5001
 cargo run --release --bin server
-
-# Start server on custom port
-cargo run --release --bin server -- --port 5002
-
-# Start server with HTTP (no TLS)
-cargo run --release --bin server -- --http
 ```
 
 ### Running Benchmarks
@@ -134,7 +128,6 @@ cargo run --release --bin client -- \
 #### Server Options
 
 - `-p, --port <PORT>`: Port to listen on (default: 5001)
-- `--http`: Use HTTP instead of HTTPS (no TLS)
 
 #### Client Options
 
