@@ -4,7 +4,6 @@ use tonic::transport::Server;
 use tokio_stream::wrappers::ReceiverStream;
 use tonic::{Request, Response, Status};
 use tracing::info;
-use std::sync::Arc;
 
 // Include the generated proto code inline
 tonic::include_proto!("greet");
@@ -14,7 +13,7 @@ use crate::greeter_server::{Greeter, GreeterServer};
 
 #[derive(Default)]
 pub struct GreeterService {
-    response_map: Arc<HashMap<u32, Vec<u8>>>,
+    response_map: HashMap<u32, Vec<u8>>,
 }
 
 impl GreeterService {
@@ -29,7 +28,7 @@ impl GreeterService {
         }
 
         Self {
-            response_map: Arc::new(response_map),
+            response_map,
         }
     }
 
@@ -73,13 +72,10 @@ impl Greeter for GreeterService {
         let mut stream = request.into_inner();
         let (tx, rx) = tokio::sync::mpsc::channel(128);
 
-        let response_map = self.response_map.clone();
         tokio::spawn(async move {
             while let Some(request) = stream.message().await.unwrap_or(None) {
                 let request_size = request.request_size;
-                let body = response_map.get(&request_size)
-                    .cloned()
-                    .unwrap_or_else(|| vec![0u8; request_size as usize]);
+                let body = vec![0u8; request_size as usize];
 
                 let reply = DownloadReply { body };
                 if tx.send(Ok(reply)).await.is_err() {
